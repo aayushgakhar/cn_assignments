@@ -5,5 +5,10 @@ sequential:
 
 concurrent:
 	gcc 1b.c -o client
-	# gcc 2b.c -o server
+	gcc 2b.c -o server
+	./server
+
+nonblocking:
+	gcc 1b.c -o client
+	gcc 2di.c -o server
 	./server

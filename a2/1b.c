@@ -11,21 +11,11 @@
 #include <fcntl.h>
 
 #define PORT 8080
-
-typedef struct thread_arg {
-    int socket_fd;
-}thread_arg;
+#define MESG_SIZE 2000
 
 void *threadFunc(void *arg)
 {
-    // int new_socket = *((int *)arg);
-    // char buffer[1024] = {0};
-    // int valread;
-    // while (1)
-    // {
-    //     valread = read(new_socket, buffer, 1024);
-    //     printf("message received: %s", buffer);
-    // }
+    int *id = (int *)arg;
     int socket_fd = 0, valread;
     struct sockaddr_in server_addr;
     
@@ -47,24 +37,23 @@ void *threadFunc(void *arg)
         printf("\nConnection Failed \n");
         return 0;
     }
-    char server_messg[10240] = { 0 };
-    char client_messg[10240] = { 0 };
+    char server_messg[MESG_SIZE] = { 0 };
+    char client_messg[MESG_SIZE] = { 0 };
     int i=0;
-    while(1){
-        printf("\n--------------------\n");
-        
-        bzero(client_messg,10240);
+    while(i<20){
+        bzero(client_messg,MESG_SIZE);
         sprintf(client_messg,"%d",i+1);
-        printf("message sent: %s\n",client_messg);
+        
         send(socket_fd, client_messg, strlen(client_messg), 0);
         
         // server_messg[0] = '\0';
-        bzero(server_messg,10240);
-        valread = recv( socket_fd , server_messg, 10240,0);
+        bzero(server_messg,MESG_SIZE);
+        valread = recv( socket_fd , server_messg, MESG_SIZE,0);
+        if(valread==0)break;
+        printf("\n--------------------\n");
+        printf("thread: %d message sent: %s\n", *id, client_messg);
         printf("response recieved: %s\n",server_messg);
         i+=1;
-        if(i>=20)
-            break;
     }
     close(socket_fd);
 
@@ -76,10 +65,13 @@ int main(int argc, char const *argv[])
 
     int n = 10;
     pthread_t ptid[n];
+    int a[10];
     for (int i = 0; i < n; i++)
     {
         int status;
-        status = pthread_create(&ptid[i], NULL, threadFunc, NULL);
+        a[i] = i;
+
+        status = pthread_create(&ptid[i], NULL, threadFunc, (void *)&a[i]);
     }
     sleep(1);
     for (int i = 0; i < n; i++)
