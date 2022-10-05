@@ -13,10 +13,14 @@
 
 #define PORT 8080
 #define MESG_SIZE 2000
+#define SEP "--------------------"
 
 typedef struct thread_arg_t
 {
     int socket_fd;
+    FILE *fp;
+    char *ip;
+    int port;
 } thread_arg_t;
 
 unsigned long long int fac(int n)
@@ -30,10 +34,46 @@ unsigned long long int fac(int n)
     return p;
 }
 
+// function returns ip from address
+char *get_ip(struct sockaddr *sa)
+{
+    static char s[INET6_ADDRSTRLEN];
+    switch (sa->sa_family)
+    {
+    case AF_INET:
+        inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), s, sizeof(s));
+        break;
+    case AF_INET6:
+        inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr), s, sizeof(s));
+        break;
+    default:
+        strcpy(s, "Unknown AF");
+        break;
+    }
+    return s;
+}
+
+int get_port(struct sockaddr *sa)
+{
+    switch (sa->sa_family)
+    {
+    case AF_INET:
+        return ntohs(((struct sockaddr_in *)sa)->sin_port);
+    case AF_INET6:
+        return ntohs(((struct sockaddr_in6 *)sa)->sin6_port);
+    default:
+        return -1;
+    }
+}
+
 void *threadFunc(void *arg)
 {
     thread_arg_t *p_arg = (thread_arg_t *)arg;
+
     int sock_fd = p_arg->socket_fd;
+    FILE *fp = p_arg->fp;
+    char *ip = p_arg->ip;
+    int port = p_arg->port;
     int valread;
 
     char client_messg[MESG_SIZE] = {0};
@@ -48,15 +88,19 @@ void *threadFunc(void *arg)
             break;
         // request = strtok(client_messg, " ");
         request = client_messg;
-        printf("\n--------------------\nrequest: %s\n", request);
-
         long long int response = fac(atoi(request));
         memset(server_messg, 0, MESG_SIZE);
         sprintf(server_messg, "%llu", response);
-        printf("Sending response: %s\n", server_messg);
+
+        printf("\n%s\n>>request: %s, Sending response: %s\n", SEP, request, server_messg);
+
+        fprintf(fp, "\n%s\n>>request: %s, response: %s, IP: %s, Port: %d\n", SEP, request, server_messg, ip, port);
+
         send(sock_fd, server_messg, strlen(server_messg), 0);
     }
     close(sock_fd);
+    fflush(fp);
+    
 }
 
 int main()
@@ -99,6 +143,14 @@ int main()
         perror("listen");
         exit(EXIT_FAILURE);
     }
+    // open file
+    FILE *fp;
+    fp = fopen("output/2c.txt", "w");
+    if (fp == NULL)
+    {
+        perror("fopen");
+        exit(EXIT_FAILURE);
+    }
     while (1)
     {
         addrlen = sizeof(client_addr);
@@ -108,13 +160,24 @@ int main()
             perror("accept");
             exit(EXIT_FAILURE);
         }
+        // get ip and port
+        char *ip = get_ip((struct sockaddr *)&client_addr);
+        int port = get_port((struct sockaddr *)&client_addr);
+        // write ip and port to file
+        fprintf(fp, "\nNew connection...\nIP: %s, Port: %d\n\n", ip, port);
+
         p_arg = (thread_arg_t *)malloc(sizeof *p_arg);
 
         p_arg->socket_fd = sock_fd;
+        p_arg->fp = fp;
+        p_arg->ip = ip;
+        p_arg->port = port;
         int status;
         status = pthread_create(&ptid[i], NULL, threadFunc, (void *)p_arg);
         i++;
     }
     close(server_fd);
+    fflush(fp);
+    fclose(fp);
     return 0;
 }

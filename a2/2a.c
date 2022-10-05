@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #define PORT 8080
 #define MESG_SIZE 2000
+#define SEP "--------------------"
 
 unsigned long long int fac(int n){
     unsigned long long int p=1;
@@ -15,6 +16,38 @@ unsigned long long int fac(int n){
         n--;
     }
     return p;
+}
+
+// function returns ip from address
+char *get_ip(struct sockaddr *sa)
+{
+    static char s[INET6_ADDRSTRLEN];
+    switch (sa->sa_family)
+    {
+    case AF_INET:
+        inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), s, sizeof(s));
+        break;
+    case AF_INET6:
+        inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr), s, sizeof(s));
+        break;
+    default:
+        strcpy(s, "Unknown AF");
+        break;
+    }
+    return s;
+}
+
+int get_port(struct sockaddr *sa)
+{
+    switch (sa->sa_family)
+    {
+    case AF_INET:
+        return ntohs(((struct sockaddr_in *)sa)->sin_port);
+    case AF_INET6:
+        return ntohs(((struct sockaddr_in6 *)sa)->sin6_port);
+    default:
+        return -1;
+    }
 }
 
 int main(){
@@ -51,6 +84,14 @@ int main(){
         perror("listen");
         exit(EXIT_FAILURE);
     }
+    // open file
+    FILE *fp;
+    fp = fopen("output/2a.txt", "w");
+    if (fp == NULL) {
+        perror("fopen");
+        exit(EXIT_FAILURE);
+    }
+
     while (1)
     {
         addrlen = sizeof(client_addr);
@@ -59,9 +100,11 @@ int main(){
             perror("accept");
             exit(EXIT_FAILURE);
         }
-        char str2[1000];
-        printf("\nREQUEST FROM %s PORT %d\n", inet_ntop(AF_INET, &client_addr.sin_addr, str2, sizeof(str2)), htons(client_addr.sin_port));
-        printf(str2, sizeof(str2));
+        // get ip and port
+        char *ip = get_ip((struct sockaddr *)&client_addr);
+        int port = get_port((struct sockaddr *)&client_addr);
+        // write ip and port to file
+        fprintf(fp, "New connection...\nIP: %s, Port: %d\n", ip, port);
 
         //     struct sockaddr_in* pV4Addr = (struct sockaddr_in*)&address;
         //     struct in_addr ipAddr = pV4Addr->sin_addr;
@@ -82,16 +125,23 @@ int main(){
                 break;
             // request = strtok(client_messg, " ");
             request = client_messg;
-            printf("\n--------------------\nrequest: %s\n", request);
+            
 
             long long int response = fac(atoi(request));
             memset(server_messg, 0, MESG_SIZE);
             sprintf(server_messg, "%llu", response);
-            printf("Sending response: %s\n", server_messg);
+
+            printf("\n%s\n>>request: %s, Sending response: %s\n", SEP, request, server_messg);
+
+            fprintf(fp, "\n%s\n>>request: %s, response: %s, IP: %s, Port: %d\n", SEP, request, server_messg, ip, port);
+
             send(sock_fd, server_messg, strlen(server_messg), 0);
         }
         close(sock_fd);
+        fflush(fp);
     }
     close(server_fd);
+    fflush(fp);
+    fclose(fp);
     return 0;
 }

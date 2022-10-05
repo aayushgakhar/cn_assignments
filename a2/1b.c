@@ -39,22 +39,23 @@ void *threadFunc(void *arg)
     }
     char server_messg[MESG_SIZE] = { 0 };
     char client_messg[MESG_SIZE] = { 0 };
-    int i=0;
-    while(i<20){
-        bzero(client_messg,MESG_SIZE);
-        sprintf(client_messg,"%d",i+1);
-        
-        send(socket_fd, client_messg, strlen(client_messg), 0);
-        
-        // server_messg[0] = '\0';
-        bzero(server_messg,MESG_SIZE);
-        valread = recv( socket_fd , server_messg, MESG_SIZE,0);
-        if(valread==0)break;
-        printf("\n--------------------\n");
-        printf("thread: %d message sent: %s\n", *id, client_messg);
-        printf("response recieved: %s\n",server_messg);
-        i+=1;
+    int i = rand()%20 + 1;
+    // i = 0;
+    // while(i<20){
+    memset(client_messg, 0, MESG_SIZE);
+    sprintf(client_messg, "%d", i + 1);
+
+    send(socket_fd, client_messg, strlen(client_messg), 0);
+    memset(server_messg, 0, MESG_SIZE);
+    valread = recv(socket_fd, server_messg, MESG_SIZE, 0);
+    if (valread == 0){
+        printf("Connection closed\n");
     }
+    printf("\n--------------------\n");
+    printf("thread: %d message sent: %s\n", *id, client_messg);
+    printf("response recieved: %s\n", server_messg);
+    i += 1;
+    // }
     close(socket_fd);
 
     return 0;

@@ -41,13 +41,13 @@ int main(int argc, char const *argv[])
     {
         printf("\n--------------------\n");
         
-        bzero(client_messg,MESG_SIZE);
+        memset(client_messg,0,MESG_SIZE);
         sprintf(client_messg,"%d",i+1);
         printf("message sent: %s\n",client_messg);
         send(socket_fd, client_messg, strlen(client_messg), 0);
         
         // server_messg[0] = '\0';
-        bzero(server_messg,MESG_SIZE);
+        memset(server_messg,0,MESG_SIZE);
         valread = recv( socket_fd , server_messg, MESG_SIZE,0);
         if(valread==0)break;
         printf("response recieved: %s\n",server_messg);
