@@ -17,77 +17,72 @@ unsigned long long int fac(int n){
 }
 
 int main(){
-    int server_fd, new_socket, valread;
-    struct sockaddr_in address;
+    int server_fd, sock_fd, valread;
+    struct sockaddr_in server_addr, client_addr;
     int opt = 1;
-    int addrlen = sizeof(address);
+    int addrlen;
+
     
     
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        perror("socket failed");
+    server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_fd < 0) {
+        perror("socket");
         exit(EXIT_FAILURE);
     }
  
     // Forcefully attaching socket to the port 8080
-    if (setsockopt(server_fd, SOL_SOCKET,
-                   SO_REUSEADDR | SO_REUSEPORT, &opt,
-                   sizeof(opt))) {
+    if (setsockopt(server_fd, SOL_SOCKET,SO_REUSEADDR | SO_REUSEPORT, &opt,sizeof(opt))) {
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
- 
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server_addr.sin_port = htons(PORT);
+
     // Forcefully attaching socket to the port 8080
-    if (bind(server_fd, (struct sockaddr*)&address,
-             sizeof(address))
-        < 0) {
-        perror("bind failed");
+    addrlen = sizeof(server_addr);
+    if (bind(server_fd, (struct sockaddr*)&server_addr,sizeof(server_addr))< 0) {
+        perror("bind");
         exit(EXIT_FAILURE);
     }
-    if (listen(server_fd, 3) < 0) {
-        perror("listen");
-        exit(EXIT_FAILURE);
-    }
-    if ((new_socket
-         = accept(server_fd, (struct sockaddr*)&address,
-                  (socklen_t*)&addrlen))
-        < 0) {
-        perror("accept");
-        exit(EXIT_FAILURE);
-    }
-
-//     struct sockaddr_in* pV4Addr = (struct sockaddr_in*)&address;
-//     struct in_addr ipAddr = pV4Addr->sin_addr;
-//     char buffer5[1024] = { 0 };
-// //    inet_ntop(AF_INET,pV4Addr->sin_addr,buffer5,1024);
-//    printf("%s\n", inet_ntoa(address->sin_addr));
-//     printf("%s",buffer5);
-
-    char buffer[10240] = {0};
-    char buffer2[10240] = {0};
-    char *request, *str, *lID;
-    int maxID = 0;
     while(1){
-        buffer[0] = '\0';
-        valread = read(new_socket,buffer,100);
-        request = strtok(buffer, " ");
-        if (request == NULL)
-        {
-            continue;
+        if (listen(server_fd, 3) < 0) {
+            perror("listen");
+            exit(EXIT_FAILURE);
         }
-        printf("\n--------------------\nrequest: %s\n", request);
+        addrlen = sizeof(client_addr);
+        if ((sock_fd= accept(server_fd, (struct sockaddr*)&client_addr,(socklen_t*)&addrlen))< 0) {
+            perror("accept");
+            exit(EXIT_FAILURE);
+        }
 
-        long long int response = fac(atoi(request));
-        // printf("response: %llu", response);
-        buffer2[0] = '\0';
+    //     struct sockaddr_in* pV4Addr = (struct sockaddr_in*)&address;
+    //     struct in_addr ipAddr = pV4Addr->sin_addr;
+    //     char buffer5[1024] = { 0 };
+    // //    inet_ntop(AF_INET,pV4Addr->sin_addr,buffer5,1024);
+    //    printf("%s\n", inet_ntoa(address->sin_addr));
+    //     printf("%s",buffer5);
 
-        sprintf(buffer2,"%llu",response);
-        printf("Sending response: %s\n", buffer2);
-        send(new_socket , buffer2 , strlen(buffer2) , 0 );
+        char client_messg[10240] = {0};
+        char server_messg[10240] = {0};
+        char *request, *str, *lID;
+        int maxID = 0;
+        while(1){
+            bzero(client_messg,10240);
+            valread = recv(sock_fd,client_messg,10240,0);
+            if(valread == 0) break;
+            // request = strtok(client_messg, " ");
+            request = client_messg;
+            printf("\n--------------------\nrequest: %s\n", request);
+
+            long long int response = fac(atoi(request));
+            bzero(server_messg,10240);
+            sprintf(server_messg,"%llu",response);
+            printf("Sending response: %s\n", server_messg);
+            send(sock_fd , server_messg , strlen(server_messg) , 0 );
+        }
+        close(sock_fd);
     }
     close(server_fd);
-
     return 0;
 }

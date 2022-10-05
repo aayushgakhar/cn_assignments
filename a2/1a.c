@@ -7,66 +7,49 @@
 
 #define PORT 8080
 
-void generate_random_string(char* str,int len){
-    int i;
-    for(i=0;i<len;i++){
-        str[i] = 'a' + rand()%26;
-    }
-    str[i] = '\0';
-}
-
-
 int main(int argc, char const *argv[])
 {
-    int sock = 0, valread, client_fd;
-    struct sockaddr_in serv_addr;
+    int socket_fd = 0, valread;
+    struct sockaddr_in server_addr;
     
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("\n Socket creation error \n");
         return -1;
     }
  
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(PORT);
+    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-    if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)
-        <= 0) {
-        printf(
-            "\nInvalid address/ Address not supported \n");
+    if (inet_pton(AF_INET, "127.0.0.1", &server_addr.sin_addr)<= 0) {
+        printf("\nInvalid address/ Address not supported \n");
         return -1;
     }
  
-    if ((client_fd
-         = connect(sock, (struct sockaddr*)&serv_addr,
-                   sizeof(serv_addr)))
-        < 0) {
+    if (connect(socket_fd, (struct sockaddr*)&server_addr,sizeof(server_addr)) < 0) {
         printf("\nConnection Failed \n");
         return -1;
     }
-    char buffer[1024] = { 0 };
-
-    char* arr[20];
-    char str[100];
-    for(int i=0;i<20;i++){
-        arr[i] = (char*)malloc(sizeof(char)*5);
-        sprintf(arr[i],"%d",i+1);
-        // generate_random_string(arr[i],9);
-    }
+    char server_messg[10240] = { 0 };
+    char client_messg[10240] = { 0 };
     int i=0;
     while(1){
         printf("\n--------------------\n");
-        printf("message sent: %s\n",arr[i]);
-        send(sock, arr[i], strlen(arr[i]), 0);
         
-        // buffer[0] = '\0';
-        bzero(buffer,1024);
-        valread = read( sock , buffer, 10000);
-        printf("response recieved: %s\n",buffer);
+        bzero(client_messg,10240);
+        sprintf(client_messg,"%d",i+1);
+        printf("message sent: %s\n",client_messg);
+        send(socket_fd, client_messg, strlen(client_messg), 0);
+        
+        // server_messg[0] = '\0';
+        bzero(server_messg,10240);
+        valread = recv( socket_fd , server_messg, 10240,0);
+        printf("response recieved: %s\n",server_messg);
         i+=1;
         if(i>=20)
             break;
     }
-    close(sock);
+    close(socket_fd);
 
     return 0;
 }

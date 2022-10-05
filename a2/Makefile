@@ -5,5 +5,5 @@ sequential:
 
 concurrent:
 	gcc 1b.c -o client
-	gcc 2b.c -o server
+	# gcc 2b.c -o server
 	./server
