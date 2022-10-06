@@ -13,6 +13,17 @@
 #define PORT 8080
 #define MESG_SIZE 2000
 
+unsigned long long int fac(int n)
+{
+    unsigned long long int p = 1;
+    while (n > 0)
+    {
+        p *= n;
+        n--;
+    }
+    return p;
+}
+
 void *threadFunc(void *arg)
 {
     int *id = (int *)arg;
@@ -39,7 +50,7 @@ void *threadFunc(void *arg)
     }
     char server_messg[MESG_SIZE] = { 0 };
     char client_messg[MESG_SIZE] = { 0 };
-    int i = rand()%20 + 1;
+    int i = rand()%20;
     // i = 0;
     // while(i<20){
     memset(client_messg, 0, MESG_SIZE);
@@ -53,12 +64,21 @@ void *threadFunc(void *arg)
     }
     printf("\n--------------------\n");
     printf("thread: %d message sent: %s\n", *id, client_messg);
-    printf("response recieved: %s\n", server_messg);
-    i += 1;
+    printf("response recieved: %s", server_messg);
+    char *p;
+    int ret = 1;
+    if (strtoull(server_messg, &p, 10) == fac(i + 1))
+    {
+        // print tick symbol
+        printf("\u2713\n");
+        ret = 0;
+    }
+    // i += 1;
     // }
     close(socket_fd);
+    pthread_exit((void *)&ret);
 
-    return 0;
+    // return 0;
 }
 
 int main(int argc, char const *argv[])
@@ -75,10 +95,13 @@ int main(int argc, char const *argv[])
         status = pthread_create(&ptid[i], NULL, threadFunc, (void *)&a[i]);
     }
     sleep(1);
+    int w = 0;
     for (int i = 0; i < n; i++)
     {
-        int ret;
+        int* ret;
         pthread_join(ptid[i], (void**)&ret);
-        printf("%d\n", ret);
+        w += *ret;
+        // printf("%d\n", ret);
     }
+    printf("Total wrong: %d\n", w);
 }

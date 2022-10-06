@@ -13,9 +13,12 @@ concurrent-thread:
 	gcc 2c.c -o server
 	./server
 
-nonblocking:
+nonblocking-select:
 	gcc 1b.c -o client
 	gcc 2di.c -o server
 	./server
 
-
+nonblocking-poll:
+	gcc 1b.c -o client
+	gcc 2dii.c -o server
+	./server

@@ -8,6 +8,10 @@
 #include <sys/select.h>
 #include <fcntl.h>
 #include <assert.h>
+#include <errno.h>
+#include <sys/time.h>
+#include <sys/types.h>
+
 #define PORT 8080
 #define MESG_SIZE 2000
 
@@ -25,43 +29,17 @@ unsigned long long int fac(int n)
 }
 
 // function returns ip from address
-char *get_ip(struct sockaddr *sa)
+char *get_ip(struct sockaddr_in *sin)
 {
-    static char s[INET6_ADDRSTRLEN];
-    switch (sa->sa_family)
-    {
-    case AF_INET:
-        inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), s, sizeof(s));
-        break;
-    case AF_INET6:
-        inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr), s, sizeof(s));
-        break;
-    default:
-        strcpy(s, "Unknown AF");
-        break;
-    }
+    static char s[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &((sin)->sin_addr), s, sizeof(s));
     return s;
 }
 
-int get_port(struct sockaddr *sa)
+int get_port(struct sockaddr_in *sin)
 {
-    switch (sa->sa_family)
-    {
-    case AF_INET:
-        return ntohs(((struct sockaddr_in *)sa)->sin_port);
-    case AF_INET6:
-        return ntohs(((struct sockaddr_in6 *)sa)->sin6_port);
-    default:
-        return -1;
-    }
-}
+    return ntohs(sin->sin_port);
 
-void set_nonblock(int socket)
-{
-    int flags;
-    flags = fcntl(socket, F_GETFL, 0);
-    assert(flags != -1);
-    fcntl(socket, F_SETFL, flags | O_NONBLOCK);
 }
 
 // get sockaddr, IPv4 or IPv6:
@@ -75,14 +53,18 @@ void *get_in_addr(struct sockaddr *sa)
 
 int main()
 {
-    int server_fd, sock_fd, valread;
+    int server_fd, valread;
     struct sockaddr_in server_addr, client_addr;
     int opt = 1;
     int addrlen;
+    int maxfd,status;
     int num_clients = 10;
     int sock_fds[num_clients];
-
+    memset(sock_fds, 0, sizeof(sock_fds));
+    struct sockaddr_in addrs[num_clients];
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    // fcntl(server_fd, F_SETFL, O_NONBLOCK);
+    
     if (server_fd < 0)
     {
         perror("socket");
@@ -106,9 +88,9 @@ int main()
         perror("bind");
         exit(EXIT_FAILURE);
     }
-    fd_set rdset;
+    
 
-    if (listen(server_fd, 3) < 0)
+    if (listen(server_fd, 32) < 0)
     {
         perror("listen");
         exit(EXIT_FAILURE);
@@ -121,50 +103,83 @@ int main()
         perror("fopen");
         exit(EXIT_FAILURE);
     }
+    fd_set rdset;
+    addrlen = sizeof(client_addr);
     printf("Waiting for connection...");
+
+    char client_messg[MESG_SIZE] = {0};
+    char server_messg[MESG_SIZE] = {0};
+
     while (1)
     {
         FD_ZERO(&rdset);
-        FD_SET(0, &rdset);
+        FD_SET(server_fd, &rdset);
+        maxfd = server_fd;
 
-        addrlen = sizeof(client_addr);
-        if ((sock_fd = accept(server_fd, (struct sockaddr *)&client_addr, (socklen_t *)&addrlen)) < 0)
-        {
-            perror("accept");
-            exit(EXIT_FAILURE);
+        for (int i = 0; i < num_clients; i++){
+            if (sock_fds[i] > 0)
+                FD_SET(sock_fds[i], &rdset);
+            if (sock_fds[i] > maxfd)
+                maxfd = sock_fds[i];
+        }
+        status = select(maxfd + 1, &rdset, NULL, NULL, NULL);
+
+        if(status < 0 && errno != EINTR){
+            perror("select");
+            // exit(EXIT_FAILURE);
         }
 
-        // get ip and port
-        char *ip = get_ip((struct sockaddr *)&client_addr);
-        int port = get_port((struct sockaddr *)&client_addr);
-        // write ip and port to file
-        fprintf(fp, "New connection...\nIP: %s, Port: %d\n", ip, port);
-
-        char client_messg[MESG_SIZE] = {0};
-        char server_messg[MESG_SIZE] = {0};
-        char *request, *str, *lID;
-        int maxID = 0;
-        while (1)
+        if (FD_ISSET(server_fd, &rdset))
         {
-            memset(client_messg, 0, MESG_SIZE);
-            valread = recv(sock_fd, client_messg, MESG_SIZE, 0);
-            if (valread == 0)
-                break;
-            // request = strtok(client_messg, " ");
-            request = client_messg;
             
-            long long int response = fac(atoi(request));
-            memset(server_messg, 0, MESG_SIZE);
-            sprintf(server_messg, "%llu", response);
-            
-            printf("\n%s\n>>request: %s, Sending response: %s\n", SEP, request, server_messg);
-
-            fprintf(fp, "\n%s\n>>request: %s, response: %s, IP: %s, Port: %d\n", SEP, request, server_messg, ip, port);
-
-            send(sock_fd, server_messg, strlen(server_messg), 0);
+            int sock_fd = accept(server_fd, (struct sockaddr *)&client_addr, (socklen_t *)&addrlen);
+            if (sock_fd < 0)
+            {
+                perror("accept");
+                exit(EXIT_FAILURE);
+            }
+            printf("Connection accepted from fd %d %s:%d",sock_fd, get_ip(&client_addr), get_port(&client_addr));
+            for (int i = 0; i < num_clients; i++)
+            {
+                if (sock_fds[i] == 0)
+                {
+                    sock_fds[i] = sock_fd;
+                    addrs[i] = client_addr;
+                    break;
+                }
+            }
         }
-        printf("Client disconnected\n");
-        close(sock_fd);
+        for (int i = 0; i < num_clients; i++)
+        {
+            if (FD_ISSET(sock_fds[i], &rdset))
+            {
+                memset(client_messg, 0, sizeof(client_messg));
+                valread = read(sock_fds[i], client_messg, MESG_SIZE);
+                if (valread < 0)
+                {
+                    perror("read");
+                    exit(EXIT_FAILURE);
+                }
+                if (valread == 0)
+                {
+                    printf("Client %d disconnected", sock_fds[i]);
+                    close(sock_fds[i]);
+                    sock_fds[i] = 0;
+                    continue;
+                }
+                int n = atoi(client_messg);
+                unsigned long long int p = fac(n);
+                memset(server_messg, 0, sizeof(server_messg));
+                sprintf(server_messg, "%llu", p);
+                send(sock_fds[i], server_messg, strlen(server_messg), 0);
+
+                char* ip = get_ip(&addrs[i]);
+                int port = get_port(&addrs[i]);
+                printf("\n%s\n>>request: %s, Sending response: %s\n\n", SEP, client_messg, server_messg);
+
+                fprintf(fp, "\n%s\n>>request: %s, response: %s, IP: %s, Port: %d\n", SEP, client_messg, server_messg, ip, port);
+            }
+        }
         fflush(fp);
     }
     close(server_fd);

@@ -19,35 +19,16 @@ unsigned long long int fac(int n){
 }
 
 // function returns ip from address
-char *get_ip(struct sockaddr *sa)
+char *get_ip(struct sockaddr_in *sin)
 {
-    static char s[INET6_ADDRSTRLEN];
-    switch (sa->sa_family)
-    {
-    case AF_INET:
-        inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr), s, sizeof(s));
-        break;
-    case AF_INET6:
-        inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr), s, sizeof(s));
-        break;
-    default:
-        strcpy(s, "Unknown AF");
-        break;
-    }
+    static char s[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &((sin)->sin_addr), s, sizeof(s));
     return s;
 }
 
-int get_port(struct sockaddr *sa)
+int get_port(struct sockaddr_in *sin)
 {
-    switch (sa->sa_family)
-    {
-    case AF_INET:
-        return ntohs(((struct sockaddr_in *)sa)->sin_port);
-    case AF_INET6:
-        return ntohs(((struct sockaddr_in6 *)sa)->sin6_port);
-    default:
-        return -1;
-    }
+    return ntohs(sin->sin_port);
 }
 
 int main(){
@@ -80,7 +61,7 @@ int main(){
         exit(EXIT_FAILURE);
     }
     
-    if (listen(server_fd, 3) < 0) {
+    if (listen(server_fd, 32) < 0) {
         perror("listen");
         exit(EXIT_FAILURE);
     }
@@ -101,8 +82,8 @@ int main(){
             exit(EXIT_FAILURE);
         }
         // get ip and port
-        char *ip = get_ip((struct sockaddr *)&client_addr);
-        int port = get_port((struct sockaddr *)&client_addr);
+        char *ip = get_ip(&client_addr);
+        int port = get_port(&client_addr);
         // write ip and port to file
         fprintf(fp, "New connection...\nIP: %s, Port: %d\n", ip, port);
 
