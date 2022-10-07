@@ -11,6 +11,8 @@
 #include <errno.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <poll.h>
+#include <sys/epoll.h>
 
 #define PORT 8080
 #define MESG_SIZE 2000
@@ -39,7 +41,6 @@ char *get_ip(struct sockaddr_in *sin)
 int get_port(struct sockaddr_in *sin)
 {
     return ntohs(sin->sin_port);
-
 }
 
 // get sockaddr, IPv4 or IPv6:
@@ -47,21 +48,24 @@ void *get_in_addr(struct sockaddr *sa)
 {
     if (sa->sa_family == AF_INET)
         return &(((struct sockaddr_in *)sa)->sin_addr);
-
     return &(((struct sockaddr_in6 *)sa)->sin6_addr);
 }
 
 int main()
 {
+    
     int server_fd, valread;
     struct sockaddr_in server_addr, client_addr;
     int opt = 1;
     int addrlen;
     int maxfd,status;
-    int num_clients = 11;
-    int sock_fds[num_clients];
-    memset(sock_fds, 0, sizeof(sock_fds));
-    struct sockaddr_in addrs[num_clients];
+    int pfd_size = 32, pfd_count = 0;
+    // struct pollfd sock_fds[pfd_size];
+    
+    int epoll_fd = epoll_create1(0);
+    
+
+    struct sockaddr_in addrs[pfd_size];
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     // fcntl(server_fd, F_SETFL, O_NONBLOCK);
     
@@ -88,73 +92,66 @@ int main()
         perror("bind");
         exit(EXIT_FAILURE);
     }
-    
-
     if (listen(server_fd, 32) < 0)
     {
         perror("listen");
         exit(EXIT_FAILURE);
     }
+
+    pfd_count = 1;
+    struct epoll_event ev;
+    struct epoll_event evs[100];
+    ev.events = EPOLLIN;
+    ev.data.fd = server_fd;
+    epoll_ctl(epoll_fd, EPOLL_CTL_ADD, server_fd, &ev);
     // open file
     FILE *fp;
-    fp = fopen("output/2di.txt", "w");
+    fp = fopen("output/2diii.txt", "w");
     if (fp == NULL)
     {
         perror("fopen");
         exit(EXIT_FAILURE);
     }
-    fd_set rdset;
     addrlen = sizeof(client_addr);
-    printf("Waiting for connection...");
+    printf("Waiting for connection...\n");
 
     char client_messg[MESG_SIZE] = {0};
     char server_messg[MESG_SIZE] = {0};
 
+    struct epoll_event events[pfd_size];
+    int icount = 0,xcount=0;
     while (1)
     {
-        FD_ZERO(&rdset);
-        FD_SET(server_fd, &rdset);
-        maxfd = server_fd;
-
-        for (int i = 0; i < num_clients; i++){
-            if (sock_fds[i] > 0)
-                FD_SET(sock_fds[i], &rdset);
-            if (sock_fds[i] > maxfd)
-                maxfd = sock_fds[i];
-        }
-        status = select(maxfd + 1, &rdset, NULL, NULL, NULL);
-
-        if(status < 0 && errno != EINTR){
-            perror("select");
-            // exit(EXIT_FAILURE);
-        }
-
-        if (FD_ISSET(server_fd, &rdset))
+        fprintf(fp,">>>>%d\n",icount++);
+        int epoll_count = epoll_wait(epoll_fd, events, pfd_count, -1);
+        fprintf(fp,"epoll_count = %d\n",epoll_count);
+        if (epoll_count < 0)
         {
-            
-            int sock_fd = accept(server_fd, (struct sockaddr *)&client_addr, (socklen_t *)&addrlen);
-            if (sock_fd < 0)
+            perror("poll");
+            exit(EXIT_FAILURE);
+        }
+        for (int i = 0; i < epoll_count; i++)
+        {
+
+            if (events[i].data.fd == server_fd)
             {
-                perror("accept");
-                exit(EXIT_FAILURE);
-            }
-            printf("Connection accepted from fd %d %s:%d",sock_fd, get_ip(&client_addr), get_port(&client_addr));
-            for (int i = 0; i < num_clients; i++)
-            {
-                if (sock_fds[i] == 0)
+                int new_socket = accept(server_fd, (struct sockaddr *)&client_addr, (socklen_t *)&addrlen);
+                if (new_socket < 0)
                 {
-                    sock_fds[i] = sock_fd;
-                    addrs[i] = client_addr;
-                    break;
+                    perror("accept");
+                    exit(EXIT_FAILURE);
                 }
+                struct epoll_event evt;
+                evt.events = EPOLLIN;
+                evt.data.fd = new_socket;
+                epoll_ctl(epoll_fd, EPOLL_CTL_ADD, new_socket, &evt);
+                pfd_count++;
+                printf("New connection , socket fd is %d , ip: %s , port : %d\n", new_socket, get_ip(&client_addr), get_port(&client_addr));
             }
-        }
-        for (int i = 0; i < num_clients; i++)
-        {
-            if (FD_ISSET(sock_fds[i], &rdset))
-            {
-                memset(client_messg, 0, sizeof(client_messg));
-                valread = read(sock_fds[i], client_messg, MESG_SIZE);
+            else{
+                int rs = getpeername(events[i].data.fd, (struct sockaddr *)&client_addr, (socklen_t *)&addrlen);
+                memset(client_messg, 0, MESG_SIZE);
+                int valread = read(events[i].data.fd, client_messg, MESG_SIZE);
                 if (valread < 0)
                 {
                     perror("read");
@@ -162,28 +159,28 @@ int main()
                 }
                 if (valread == 0)
                 {
-                    printf("Client %d disconnected", sock_fds[i]);
-                    close(sock_fds[i]);
-                    sock_fds[i] = 0;
+                    printf("Client disconnected, ip: %s , port : %d\n", get_ip(&client_addr), get_port(&client_addr));
+                    close(events[i].data.fd);
+                    epoll_ctl(epoll_fd, EPOLL_CTL_DEL, server_fd, 0);
+                    // pfd_count--;
                     continue;
                 }
                 int n = atoi(client_messg);
-                unsigned long long int p = fac(n);
-                memset(server_messg, 0, sizeof(server_messg));
-                sprintf(server_messg, "%llu", p);
-                send(sock_fds[i], server_messg, strlen(server_messg), 0);
-
-                char* ip = get_ip(&addrs[i]);
-                int port = get_port(&addrs[i]);
+                unsigned long long int res = fac(n);
+                sprintf(server_messg, "%llu", res);
+                int sent = send(events[i].data.fd, server_messg, strlen(server_messg), 0);
+                char *ip = get_ip(&client_addr);
+                int port = get_port(&client_addr);
                 printf("\n%s\n>>request: %s, Sending response: %s\n\n", SEP, client_messg, server_messg);
 
                 fprintf(fp, "\n%s\n>>request: %s, response: %s, IP: %s, Port: %d\n", SEP, client_messg, server_messg, ip, port);
+                fflush(fp);
             }
         }
-        fflush(fp);
     }
-    close(server_fd);
     fflush(fp);
     fclose(fp);
+    close(server_fd);
+    close(epoll_fd);
     return 0;
 }

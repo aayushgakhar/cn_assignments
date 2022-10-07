@@ -60,7 +60,7 @@ int main()
     int opt = 1;
     int addrlen;
     int maxfd,status;
-    int pfd_size = 10, pfd_count = 0;
+    int pfd_size = 11, pfd_count = 0;
     struct pollfd sock_fds[pfd_size];
 
     struct sockaddr_in addrs[pfd_size];
@@ -143,6 +143,7 @@ int main()
                 }
                 else{
                     int sock_fd = sock_fds[i].fd;
+                    memset(client_messg, 0, MESG_SIZE);
                     valread = recv(sock_fd, client_messg, MESG_SIZE,0);
                     if (valread < 0)
                     {
@@ -160,6 +161,7 @@ int main()
                     }
                     int n = atoi(client_messg);
                     unsigned long long int p = fac(n);
+                    memset(server_messg, 0, MESG_SIZE);
                     sprintf(server_messg, "%llu", p);
                     send(sock_fd, server_messg, strlen(server_messg), 0);
                     char *ip = get_ip(&addrs[i]);

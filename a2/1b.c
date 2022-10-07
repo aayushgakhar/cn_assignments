@@ -13,6 +13,8 @@
 #define PORT 8080
 #define MESG_SIZE 2000
 
+
+
 unsigned long long int fac(int n)
 {
     unsigned long long int p = 1;
@@ -34,6 +36,7 @@ void *threadFunc(void *arg)
         printf("\n Socket creation error \n");
         return 0;
     }
+    printf("Socket created%d\n", *id);
  
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(PORT);
@@ -48,15 +51,17 @@ void *threadFunc(void *arg)
         printf("\nConnection Failed \n");
         return 0;
     }
+    printf("Connected%d\n", *id);
     char server_messg[MESG_SIZE] = { 0 };
     char client_messg[MESG_SIZE] = { 0 };
-    int i = rand()%20;
-    // i = 0;
+    // int i = rand()%20;
+    int  i = *id;
     // while(i<20){
     memset(client_messg, 0, MESG_SIZE);
     sprintf(client_messg, "%d", i + 1);
 
     send(socket_fd, client_messg, strlen(client_messg), 0);
+    printf("thread: %d message sent: %s\n", *id, client_messg);
     memset(server_messg, 0, MESG_SIZE);
     valread = recv(socket_fd, server_messg, MESG_SIZE, 0);
     if (valread == 0){
@@ -70,15 +75,15 @@ void *threadFunc(void *arg)
     if (strtoull(server_messg, &p, 10) == fac(i + 1))
     {
         // print tick symbol
-        printf("\u2713\n");
+        printf("\033[0;32m");
+        printf(" \u2713\n");
+        printf("\033[0m");
         ret = 0;
     }
     // i += 1;
     // }
     close(socket_fd);
     pthread_exit((void *)&ret);
-
-    // return 0;
 }
 
 int main(int argc, char const *argv[])
@@ -86,7 +91,7 @@ int main(int argc, char const *argv[])
 
     int n = 10;
     pthread_t ptid[n];
-    int a[10];
+    int a[n];
     for (int i = 0; i < n; i++)
     {
         int status;
@@ -94,14 +99,12 @@ int main(int argc, char const *argv[])
 
         status = pthread_create(&ptid[i], NULL, threadFunc, (void *)&a[i]);
     }
-    sleep(1);
     int w = 0;
     for (int i = 0; i < n; i++)
     {
         int* ret;
         pthread_join(ptid[i], (void**)&ret);
         w += *ret;
-        // printf("%d\n", ret);
     }
     printf("Total wrong: %d\n", w);
 }
