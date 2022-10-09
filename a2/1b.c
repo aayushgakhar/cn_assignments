@@ -65,7 +65,7 @@ void *threadFunc(void *arg)
     memset(server_messg, 0, MESG_SIZE);
     valread = recv(socket_fd, server_messg, MESG_SIZE, 0);
     if (valread == 0){
-        printf("Connection closed\n");
+        printf("Connection closed%d\n",*id);
     }
     printf("\n--------------------\n");
     printf("thread: %d message sent: %s\n", *id, client_messg);
@@ -88,7 +88,6 @@ void *threadFunc(void *arg)
 
 int main(int argc, char const *argv[])
 {
-
     int n = 10;
     pthread_t ptid[n];
     int a[n];

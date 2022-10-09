@@ -1,30 +1,120 @@
 
 --------------------
->>request: 3, response: 6, IP: 127.0.0.1, Port: 39194
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 46436
 
 --------------------
->>request: 4, response: 24, IP: 127.0.0.1, Port: 39208
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 46432
 
 --------------------
->>request: 5, response: 120, IP: 127.0.0.1, Port: 39222
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 46450
 
 --------------------
->>request: 6, response: 720, IP: 127.0.0.1, Port: 39230
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 46460
 
 --------------------
->>request: 2, response: 2, IP: 127.0.0.1, Port: 39192
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 46448
 
 --------------------
->>request: 7, response: 5040, IP: 127.0.0.1, Port: 39224
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 46420
 
 --------------------
->>request: 9, response: 362880, IP: 127.0.0.1, Port: 39248
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 46476
 
 --------------------
->>request: 8, response: 40320, IP: 127.0.0.1, Port: 39234
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 46466
 
 --------------------
->>request: 10, response: 3628800, IP: 127.0.0.1, Port: 39244
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 46492
 
 --------------------
->>request: 1, response: 1, IP: 127.0.0.1, Port: 39262
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 46498
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 46506
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 46514
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 46528
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 46530
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 46544
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 46560
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 46556
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 46586
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 46574
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 46600
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 38314
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 38320
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 38322
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 38338
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 38354
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 38356
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 38364
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 38390
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 38406
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 38374
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 38410
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 38412
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 38424
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 38428
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 38440
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 38454
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 38456
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 38472
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 38488
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 38494

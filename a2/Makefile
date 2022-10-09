@@ -4,31 +4,31 @@ sequential:
 	gcc 2a.c -o server
 	./server
 
-concurrent-fork:
+fork:
 	mkdir -p output
 	gcc 1b.c -o client
 	gcc 2b.c -o server
 	./server
 
-concurrent-thread:
+thread:
 	mkdir -p output
 	gcc 1b.c -o client
 	gcc 2c.c -o server
 	./server
 
-nonblocking-select:
+select:
 	mkdir -p output
 	gcc 1b.c -o client
 	gcc 2di.c -o server
 	./server
 
-nonblocking-poll:
+poll:
 	mkdir -p output
 	gcc 1b.c -o client
 	gcc 2dii.c -o server
 	./server
 
-nonblocking-epoll:
+epoll:
 	mkdir -p output
 	gcc 1b.c -o client
 	gcc 2diii.c -o server

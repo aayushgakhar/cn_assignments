@@ -128,7 +128,7 @@ int main()
         char *ip = get_ip(&client_addr);
         int port = get_port(&client_addr);
         // write ip and port to file
-        fprintf(fp, "New connection...\nIP: %s, Port: %d\n", ip, port);
+        // fprintf(fp, "New connection...\nIP: %s, Port: %d\n", ip, port);
 
         if (fork() == 0)
         {

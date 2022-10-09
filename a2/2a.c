@@ -118,6 +118,7 @@ int main(){
 
             send(sock_fd, server_messg, strlen(server_messg), 0);
         }
+        printf("\n>>Connection closed\n");
         close(sock_fd);
         fflush(fp);
     }
