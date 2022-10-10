@@ -88,6 +88,9 @@ int main()
 {
     int server_fd, valread;
     struct sockaddr_in server_addr, client_addr;
+    // get pid
+    pid_t pid = getpid();
+    printf("pid: %d\n", pid);
     int opt = 1;
     int addrlen;
     thread_arg_t* p_arg;

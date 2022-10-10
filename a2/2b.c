@@ -76,6 +76,8 @@ int main()
     struct sockaddr_in server_addr, client_addr;
     int opt = 1;
     int addrlen;
+    pid_t pid = getpid();
+    printf("pid: %d\n", pid);
 
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0)

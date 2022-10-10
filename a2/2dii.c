@@ -59,6 +59,9 @@ int main()
     struct sockaddr_in server_addr, client_addr;
     int opt = 1;
     int addrlen;
+    pid_t pid = getpid();
+    printf("pid: %d\n", pid);
+    
     int maxfd,status;
     int pfd_size = 11, pfd_count = 0;
     struct pollfd sock_fds[pfd_size];

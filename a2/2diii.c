@@ -56,7 +56,8 @@ int create_server(){
     struct sockaddr_in server_addr;
     int opt = 1;
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
-    // fcntl(server_fd, F_SETFL, O_NONBLOCK);
+    pid_t pid = getpid();
+    printf("pid: %d\n", pid);
 
     if (server_fd < 0)
     {

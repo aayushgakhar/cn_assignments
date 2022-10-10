@@ -57,6 +57,9 @@ int main()
     struct sockaddr_in server_addr, client_addr;
     int opt = 1;
     int addrlen;
+    pid_t pid = getpid();
+    printf("pid: %d\n", pid);
+    
     int maxfd,status;
     int num_clients = 11;
     int sock_fds[num_clients];

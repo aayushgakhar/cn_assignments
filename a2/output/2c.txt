@@ -1,70 +1,1190 @@
 
 New connection...
-IP: 127.0.0.1, Port: 42930
+IP: 127.0.0.1, Port: 49556
 
 
 New connection...
-IP: 127.0.0.1, Port: 42936
+IP: 127.0.0.1, Port: 56242
 
 
 New connection...
-IP: 127.0.0.1, Port: 42940
+IP: 127.0.0.1, Port: 56248
 
 
 New connection...
-IP: 127.0.0.1, Port: 42944
+IP: 127.0.0.1, Port: 56254
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 56242
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 56248
+
+New connection...
+IP: 127.0.0.1, Port: 56266
+
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 56254
+
+New connection...
+IP: 127.0.0.1, Port: 56272
+
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 56266
+
+New connection...
+IP: 127.0.0.1, Port: 56282
 
 
 New connection...
-IP: 127.0.0.1, Port: 42952
+IP: 127.0.0.1, Port: 56292
+
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 56272
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 56292
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 56282
+
+New connection...
+IP: 127.0.0.1, Port: 56294
+
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 56294
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 49556
+
+New connection...
+IP: 127.0.0.1, Port: 56304
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 56304
+
+New connection...
+IP: 127.0.0.1, Port: 56314
 
 
 New connection...
-IP: 127.0.0.1, Port: 42964
-
-
---------------------
->>request: 5, response: 120, IP: 127.0.0.1, Port: 42944
-
---------------------
->>request: 6, response: 720, IP: 127.0.0.1, Port: 42964
-
---------------------
->>request: 4, response: 24, IP: 127.0.0.1, Port: 42940
-
-New connection...
-IP: 127.0.0.1, Port: 42978
-
-
---------------------
->>request: 7, response: 5040, IP: 127.0.0.1, Port: 42952
-
---------------------
->>request: 2, response: 2, IP: 127.0.0.1, Port: 42930
-
---------------------
->>request: 8, response: 40320, IP: 127.0.0.1, Port: 42978
-
-New connection...
-IP: 127.0.0.1, Port: 42980
+IP: 127.0.0.1, Port: 56318
 
 
 New connection...
-IP: 127.0.0.1, Port: 42994
+IP: 127.0.0.1, Port: 56322
 
-
---------------------
->>request: 9, response: 362880, IP: 127.0.0.1, Port: 42994
-
---------------------
->>request: 10, response: 3628800, IP: 127.0.0.1, Port: 42980
 
 New connection...
-IP: 127.0.0.1, Port: 43002
+IP: 127.0.0.1, Port: 56324
 
 
 --------------------
->>request: 1, response: 1, IP: 127.0.0.1, Port: 43002
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 56318
+
+New connection...
+IP: 127.0.0.1, Port: 56328
+
+
+New connection...
+IP: 127.0.0.1, Port: 56344
+
 
 --------------------
->>request: 3, response: 6, IP: 127.0.0.1, Port: 42936
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 56324
+
+New connection...
+IP: 127.0.0.1, Port: 56360
+
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 56322
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 56344
+
+New connection...
+IP: 127.0.0.1, Port: 56372
+
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 56328
+
+New connection...
+IP: 127.0.0.1, Port: 56378
+
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 56378
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 56314
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 56372
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 56360
+
+New connection...
+IP: 127.0.0.1, Port: 56382
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 56382
+
+New connection...
+IP: 127.0.0.1, Port: 56394
+
+
+New connection...
+IP: 127.0.0.1, Port: 56400
+
+
+New connection...
+IP: 127.0.0.1, Port: 56410
+
+
+New connection...
+IP: 127.0.0.1, Port: 56422
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 56400
+
+New connection...
+IP: 127.0.0.1, Port: 56424
+
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 56410
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 56422
+
+New connection...
+IP: 127.0.0.1, Port: 56432
+
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 56424
+
+New connection...
+IP: 127.0.0.1, Port: 56440
+
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 56440
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 56432
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 56394
+
+New connection...
+IP: 127.0.0.1, Port: 56454
+
+
+New connection...
+IP: 127.0.0.1, Port: 56458
+
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 56458
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 56454
+
+New connection...
+IP: 127.0.0.1, Port: 56462
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 56462
+
+New connection...
+IP: 127.0.0.1, Port: 56464
+
+
+New connection...
+IP: 127.0.0.1, Port: 56470
+
+
+New connection...
+IP: 127.0.0.1, Port: 56476
+
+
+New connection...
+IP: 127.0.0.1, Port: 56490
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 56470
+
+New connection...
+IP: 127.0.0.1, Port: 56502
+
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 56476
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 56490
+
+New connection...
+IP: 127.0.0.1, Port: 56508
+
+
+New connection...
+IP: 127.0.0.1, Port: 56524
+
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 56502
+
+New connection...
+IP: 127.0.0.1, Port: 56534
+
+
+New connection...
+IP: 127.0.0.1, Port: 56540
+
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 56464
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 56534
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 56508
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 56540
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 56524
+
+New connection...
+IP: 127.0.0.1, Port: 56550
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 56550
+
+New connection...
+IP: 127.0.0.1, Port: 56552
+
+
+New connection...
+IP: 127.0.0.1, Port: 56564
+
+
+New connection...
+IP: 127.0.0.1, Port: 56580
+
+
+New connection...
+IP: 127.0.0.1, Port: 56596
+
+
+New connection...
+IP: 127.0.0.1, Port: 56606
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 56564
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 56580
+
+New connection...
+IP: 127.0.0.1, Port: 56622
+
+
+New connection...
+IP: 127.0.0.1, Port: 56630
+
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 56596
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 56606
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 56622
+
+New connection...
+IP: 127.0.0.1, Port: 56644
+
+
+New connection...
+IP: 127.0.0.1, Port: 56654
+
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 56552
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 56630
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 56654
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 56644
+
+New connection...
+IP: 127.0.0.1, Port: 56658
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 56658
+
+New connection...
+IP: 127.0.0.1, Port: 56668
+
+
+New connection...
+IP: 127.0.0.1, Port: 56678
+
+
+New connection...
+IP: 127.0.0.1, Port: 56692
+
+
+New connection...
+IP: 127.0.0.1, Port: 56706
+
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 56692
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 56678
+
+New connection...
+IP: 127.0.0.1, Port: 56714
+
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 56706
+
+New connection...
+IP: 127.0.0.1, Port: 56730
+
+
+New connection...
+IP: 127.0.0.1, Port: 56738
+
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 56714
+
+New connection...
+IP: 127.0.0.1, Port: 56742
+
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 56738
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 56742
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 56668
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 56730
+
+New connection...
+IP: 127.0.0.1, Port: 56746
+
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 56746
+
+New connection...
+IP: 127.0.0.1, Port: 56756
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 56756
+
+New connection...
+IP: 127.0.0.1, Port: 56772
+
+
+New connection...
+IP: 127.0.0.1, Port: 56780
+
+
+New connection...
+IP: 127.0.0.1, Port: 56782
+
+
+New connection...
+IP: 127.0.0.1, Port: 56792
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 56780
+
+New connection...
+IP: 127.0.0.1, Port: 56806
+
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 56782
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 56792
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 56806
+
+New connection...
+IP: 127.0.0.1, Port: 56816
+
+
+New connection...
+IP: 127.0.0.1, Port: 56820
+
+
+New connection...
+IP: 127.0.0.1, Port: 56834
+
+
+New connection...
+IP: 127.0.0.1, Port: 56844
+
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 56834
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 56816
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 56820
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 56772
+
+New connection...
+IP: 127.0.0.1, Port: 56852
+
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 56844
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 56852
+
+New connection...
+IP: 127.0.0.1, Port: 56854
+
+
+New connection...
+IP: 127.0.0.1, Port: 56858
+
+
+New connection...
+IP: 127.0.0.1, Port: 56868
+
+
+New connection...
+IP: 127.0.0.1, Port: 56876
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 56858
+
+New connection...
+IP: 127.0.0.1, Port: 56888
+
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 56868
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 56876
+
+New connection...
+IP: 127.0.0.1, Port: 56896
+
+
+New connection...
+IP: 127.0.0.1, Port: 56912
+
+
+New connection...
+IP: 127.0.0.1, Port: 56916
+
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 56888
+
+New connection...
+IP: 127.0.0.1, Port: 56930
+
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 56916
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 56896
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 56930
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 56854
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 56912
+
+New connection...
+IP: 127.0.0.1, Port: 56946
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 56946
+
+New connection...
+IP: 127.0.0.1, Port: 56954
+
+
+New connection...
+IP: 127.0.0.1, Port: 56956
+
+
+New connection...
+IP: 127.0.0.1, Port: 56958
+
+
+New connection...
+IP: 127.0.0.1, Port: 56968
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 56956
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 56958
+
+New connection...
+IP: 127.0.0.1, Port: 56970
+
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 56968
+
+New connection...
+IP: 127.0.0.1, Port: 56982
+
+
+New connection...
+IP: 127.0.0.1, Port: 56998
+
+
+New connection...
+IP: 127.0.0.1, Port: 57004
+
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 56982
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 56970
+
+New connection...
+IP: 127.0.0.1, Port: 57020
+
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 56998
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 57020
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 57004
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 56954
+
+New connection...
+IP: 127.0.0.1, Port: 57032
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 57032
+
+New connection...
+IP: 127.0.0.1, Port: 57040
+
+
+New connection...
+IP: 127.0.0.1, Port: 57048
+
+
+New connection...
+IP: 127.0.0.1, Port: 57054
+
+
+New connection...
+IP: 127.0.0.1, Port: 57066
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 57048
+
+New connection...
+IP: 127.0.0.1, Port: 57078
+
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 57054
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 57066
+
+New connection...
+IP: 127.0.0.1, Port: 57092
+
+
+New connection...
+IP: 127.0.0.1, Port: 57098
+
+
+New connection...
+IP: 127.0.0.1, Port: 57102
+
+
+New connection...
+IP: 127.0.0.1, Port: 57106
+
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 57078
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 57040
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 57102
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 57106
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 57092
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 57098
+
+New connection...
+IP: 127.0.0.1, Port: 57108
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 57108
+
+New connection...
+IP: 127.0.0.1, Port: 57110
+
+
+New connection...
+IP: 127.0.0.1, Port: 57126
+
+
+New connection...
+IP: 127.0.0.1, Port: 57142
+
+
+New connection...
+IP: 127.0.0.1, Port: 57150
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 57126
+
+New connection...
+IP: 127.0.0.1, Port: 57154
+
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 57142
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 57150
+
+New connection...
+IP: 127.0.0.1, Port: 57156
+
+
+New connection...
+IP: 127.0.0.1, Port: 57172
+
+
+New connection...
+IP: 127.0.0.1, Port: 57174
+
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 57172
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 57174
+
+New connection...
+IP: 127.0.0.1, Port: 57190
+
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 57190
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 57156
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 57110
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 57154
+
+New connection...
+IP: 127.0.0.1, Port: 57194
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 57194
+
+New connection...
+IP: 127.0.0.1, Port: 57202
+
+
+New connection...
+IP: 127.0.0.1, Port: 57204
+
+
+New connection...
+IP: 127.0.0.1, Port: 57216
+
+
+New connection...
+IP: 127.0.0.1, Port: 57224
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 57204
+
+New connection...
+IP: 127.0.0.1, Port: 57240
+
+
+New connection...
+IP: 127.0.0.1, Port: 57244
+
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 57216
+
+New connection...
+IP: 127.0.0.1, Port: 57246
+
+
+New connection...
+IP: 127.0.0.1, Port: 57256
+
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 57224
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 57246
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 57240
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 57244
+
+New connection...
+IP: 127.0.0.1, Port: 57260
+
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 57202
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 57256
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 57260
+
+New connection...
+IP: 127.0.0.1, Port: 57274
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 57274
+
+New connection...
+IP: 127.0.0.1, Port: 57284
+
+
+New connection...
+IP: 127.0.0.1, Port: 57294
+
+
+New connection...
+IP: 127.0.0.1, Port: 57298
+
+
+New connection...
+IP: 127.0.0.1, Port: 57302
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 57294
+
+New connection...
+IP: 127.0.0.1, Port: 57316
+
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 57298
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 57302
+
+New connection...
+IP: 127.0.0.1, Port: 57320
+
+
+New connection...
+IP: 127.0.0.1, Port: 57334
+
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 57284
+
+New connection...
+IP: 127.0.0.1, Port: 57338
+
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 57338
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 57320
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 57316
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 57334
+
+New connection...
+IP: 127.0.0.1, Port: 57344
+
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 57344
+
+New connection...
+IP: 127.0.0.1, Port: 57360
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 57360
+
+New connection...
+IP: 127.0.0.1, Port: 57372
+
+
+New connection...
+IP: 127.0.0.1, Port: 57384
+
+
+New connection...
+IP: 127.0.0.1, Port: 57396
+
+
+New connection...
+IP: 127.0.0.1, Port: 57408
+
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 57384
+
+New connection...
+IP: 127.0.0.1, Port: 57418
+
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 57396
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 57408
+
+New connection...
+IP: 127.0.0.1, Port: 57426
+
+
+New connection...
+IP: 127.0.0.1, Port: 57428
+
+
+New connection...
+IP: 127.0.0.1, Port: 57440
+
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 57418
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 57428
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 57440
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 57372
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 57426
+
+New connection...
+IP: 127.0.0.1, Port: 57450
+
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 57450
+
+New connection...
+IP: 127.0.0.1, Port: 57466
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 57466
+
+New connection...
+IP: 127.0.0.1, Port: 55828
+
+
+New connection...
+IP: 127.0.0.1, Port: 55838
+
+
+New connection...
+IP: 127.0.0.1, Port: 55854
+
+
+New connection...
+IP: 127.0.0.1, Port: 55868
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 55838
+
+New connection...
+IP: 127.0.0.1, Port: 55876
+
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 55854
+
+New connection...
+IP: 127.0.0.1, Port: 55884
+
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 55876
+
+New connection...
+IP: 127.0.0.1, Port: 55886
+
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 55884
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 55868
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 55886
+
+New connection...
+IP: 127.0.0.1, Port: 55900
+
+
+New connection...
+IP: 127.0.0.1, Port: 55910
+
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 55900
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 55910
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 55828
+
+New connection...
+IP: 127.0.0.1, Port: 55912
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 55912
+
+New connection...
+IP: 127.0.0.1, Port: 55916
+
+
+New connection...
+IP: 127.0.0.1, Port: 55920
+
+
+New connection...
+IP: 127.0.0.1, Port: 55936
+
+
+New connection...
+IP: 127.0.0.1, Port: 55942
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 55920
+
+New connection...
+IP: 127.0.0.1, Port: 55948
+
+
+New connection...
+IP: 127.0.0.1, Port: 55952
+
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 55936
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 55942
+
+New connection...
+IP: 127.0.0.1, Port: 55956
+
+
+New connection...
+IP: 127.0.0.1, Port: 55960
+
+
+New connection...
+IP: 127.0.0.1, Port: 55976
+
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 55952
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 55956
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 55948
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 55916
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 55976
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 55960
+
+New connection...
+IP: 127.0.0.1, Port: 55990
+
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 55990
+
+New connection...
+IP: 127.0.0.1, Port: 56006
+
+
+New connection...
+IP: 127.0.0.1, Port: 56008
+
+
+New connection...
+IP: 127.0.0.1, Port: 56014
+
+
+New connection...
+IP: 127.0.0.1, Port: 56026
+
+
+--------------------
+>>request: 3, response: 6, IP: 127.0.0.1, Port: 56008
+
+--------------------
+>>request: 4, response: 24, IP: 127.0.0.1, Port: 56014
+
+New connection...
+IP: 127.0.0.1, Port: 56032
+
+
+New connection...
+IP: 127.0.0.1, Port: 56048
+
+
+--------------------
+>>request: 5, response: 120, IP: 127.0.0.1, Port: 56026
+
+--------------------
+>>request: 6, response: 720, IP: 127.0.0.1, Port: 56032
+
+New connection...
+IP: 127.0.0.1, Port: 56064
+
+
+New connection...
+IP: 127.0.0.1, Port: 56070
+
+
+New connection...
+IP: 127.0.0.1, Port: 56084
+
+
+--------------------
+>>request: 2, response: 2, IP: 127.0.0.1, Port: 56006
+
+New connection...
+IP: 127.0.0.1, Port: 56096
+
+
+--------------------
+>>request: 7, response: 5040, IP: 127.0.0.1, Port: 56084
+
+--------------------
+>>request: 9, response: 362880, IP: 127.0.0.1, Port: 56064
+
+--------------------
+>>request: 8, response: 40320, IP: 127.0.0.1, Port: 56048
+
+--------------------
+>>request: 10, response: 3628800, IP: 127.0.0.1, Port: 56096
+
+--------------------
+>>request: 1, response: 1, IP: 127.0.0.1, Port: 56070
