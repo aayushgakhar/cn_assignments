@@ -13,10 +13,10 @@
 #include <sys/types.h>
 #include <poll.h>
 #include <sys/epoll.h>
+#include "util.h"
 
-#define PORT 8080
-#define MESG_SIZE 2000
 #define MAX_CONNECTIONS 10
+
 
 #define SEP "--------------------"
 
@@ -128,11 +128,13 @@ int main()
     }
     // open file
     FILE *fp;
-    fp = fopen("output/2diii.txt", "w");
-    if (fp == NULL)
-    {
-        perror("fopen");
-        exit(EXIT_FAILURE);
+    if(FILE_PRINT){
+        fp = fopen("output/2diii.txt", "w");
+        if (fp == NULL)
+        {
+            perror("fopen");
+            exit(EXIT_FAILURE);
+        }
     }
     addrlen = sizeof(client_addr);
     printf("Waiting for connection...\n");
@@ -167,7 +169,9 @@ int main()
                 (*evt).data.fd = new_socket;
                 epoll_ctl(epoll_fd, EPOLL_CTL_ADD, new_socket, evt);
                 pfd_count++;
-                printf("New connection , socket fd is %d , ip: %s , port : %d\n", new_socket, get_ip(&client_addr), get_port(&client_addr));
+                if(PRINT){
+                    printf("New connection , socket fd is %d , ip: %s , port : %d\n", new_socket, get_ip(&client_addr), get_port(&client_addr));
+                }
             }
             else{
                 memset(client_messg, 0, MESG_SIZE);
@@ -179,7 +183,9 @@ int main()
                 }
                 if (valread == 0)
                 {
-                    printf("Client disconnected, ip: %s , port : %d\n", get_ip(&client_addr), get_port(&client_addr));
+                    if(PRINT){
+                        printf("Client disconnected, ip: %s , port : %d\n", get_ip(&client_addr), get_port(&client_addr));
+                    }
                     close(ep_evs[i].data.fd);
                     epoll_ctl(epoll_fd, EPOLL_CTL_DEL, ep_evs[i].data.fd, 0);
                     // pfd_count--;
@@ -192,15 +198,16 @@ int main()
                 int sent = send(ep_evs[i].data.fd, server_messg, strlen(server_messg), 0);
                 char *ip = get_ip(&client_addr);
                 int port = get_port(&client_addr);
-                printf("\n%s\n>>request: %s, Sending response: %s\n\n", SEP, client_messg, server_messg);
-
-                fprintf(fp, "request: %s, response: %s, IP: %s, Port: %d\n", client_messg, server_messg, ip, port);
-                fflush(fp);
+                if(PRINT){
+                    printf("\n%s\n>>request: %s, Sending response: %s\n\n", SEP, client_messg, server_messg);
+                }
+                if(FILE_PRINT){
+                    fprintf(fp, "request: %s, response: %s, IP: %s, Port: %d\n", client_messg, server_messg, ip, port);
+                    fflush(fp);
+                }
             }
         }
     }
-    fflush(fp);
-    fclose(fp);
     close(server_fd);
     close(epoll_fd);
     return 0;

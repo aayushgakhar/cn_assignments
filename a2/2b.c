@@ -10,9 +10,9 @@
 #include <errno.h>
 #include <pthread.h>
 #include <fcntl.h>
+#include "util.h"
 
-#define PORT 8080
-#define MESG_SIZE 2000
+
 #define SEP "--------------------"
 
 unsigned long long int fac(int n)
@@ -59,15 +59,17 @@ void forkFunc(int sock_fd, FILE* fp, char* ip, int port)
         long long int response = fac(atoi(request));
         memset(server_messg, 0, MESG_SIZE);
         sprintf(server_messg, "%llu", response);
+        if(PRINT){
+            printf("\n%s\n>>request: %s, Sending response: %s\n",SEP, request, server_messg);
+        }
+        if(FILE_PRINT){
+            fprintf(fp, "request: %s, response: %s, IP: %s, Port: %d\n", request, server_messg, ip, port);
+            fflush(fp);
+        }
 
-        printf("\n%s\n>>request: %s, Sending response: %s\n",SEP, request, server_messg);
-
-        fprintf(fp, "\n%s\n>>request: %s, response: %s, IP: %s, Port: %d\n\n", SEP, request, server_messg, ip, port);
-        
         send(sock_fd, server_messg, strlen(server_messg), 0);
     }
     close(sock_fd);
-    fflush(fp);
 }
 
 int main()
@@ -110,11 +112,13 @@ int main()
     }
     // open file
     FILE *fp;
-    fp = fopen("output/2b.txt", "w");
-    if (fp == NULL)
-    {
-        perror("fopen");
-        exit(EXIT_FAILURE);
+    if(FILE_PRINT){
+        fp = fopen("output/2b.txt", "w");
+        if (fp == NULL)
+        {
+            perror("fopen");
+            exit(EXIT_FAILURE);
+        }
     }
     int i = 0;
     while (1)
@@ -129,8 +133,6 @@ int main()
         // get ip and port
         char *ip = get_ip(&client_addr);
         int port = get_port(&client_addr);
-        // write ip and port to file
-        // fprintf(fp, "New connection...\nIP: %s, Port: %d\n", ip, port);
 
         if (fork() == 0)
         {
@@ -143,8 +145,6 @@ int main()
         }
     }
     close(server_fd);
-    fflush(fp);
-    fclose(fp);
 
     return 0;
 }

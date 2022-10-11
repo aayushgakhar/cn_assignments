@@ -55,13 +55,14 @@ void *threadFunc(void *arg)
     char server_messg[MESG_SIZE] = { 0 };
     char client_messg[MESG_SIZE] = { 0 };
     // int i = rand()%20;
-    int  i = *id;
-    // while(i<20){
+    int  i = 0;
+    int ret = 0;
+    while(i<20){
     memset(client_messg, 0, MESG_SIZE);
     sprintf(client_messg, "%d", i + 1);
 
     send(socket_fd, client_messg, strlen(client_messg), 0);
-    printf("thread: %d message sent: %s\n", *id, client_messg);
+    // printf("thread: %d message sent: %s\n", *id, client_messg);
     memset(server_messg, 0, MESG_SIZE);
     valread = recv(socket_fd, server_messg, MESG_SIZE, 0);
     if (valread == 0){
@@ -71,17 +72,19 @@ void *threadFunc(void *arg)
     printf("thread: %d message sent: %s\n", *id, client_messg);
     printf("response recieved: %s", server_messg);
     char *p;
-    int ret = 1;
+    
     if (strtoull(server_messg, &p, 10) == fac(i + 1))
     {
         // print tick symbol
         printf("\033[0;32m");
         printf(" \u2713\n");
         printf("\033[0m");
-        ret = 0;
+        // ret = 0;
+    }else{
+        ret += 1;
     }
-    // i += 1;
-    // }
+    i += 1;
+    }
     close(socket_fd);
     pthread_exit((void *)&ret);
 }

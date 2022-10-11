@@ -11,9 +11,10 @@
 #include <errno.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include "util.h"
 
-#define PORT 8080
-#define MESG_SIZE 2000
+
+
 
 #define SEP "--------------------"
 
@@ -100,11 +101,13 @@ int main()
     }
     // open file
     FILE *fp;
-    fp = fopen("output/2di.txt", "w");
-    if (fp == NULL)
-    {
-        perror("fopen");
-        exit(EXIT_FAILURE);
+    if(FILE_PRINT){
+        fp = fopen("output/2di.txt", "w");
+        if (fp == NULL)
+        {
+            perror("fopen");
+            exit(EXIT_FAILURE);
+        }
     }
     fd_set rdset;
     addrlen = sizeof(client_addr);
@@ -141,7 +144,9 @@ int main()
                 perror("accept");
                 exit(EXIT_FAILURE);
             }
-            printf("Connection accepted from fd %d %s:%d",sock_fd, get_ip(&client_addr), get_port(&client_addr));
+            if(PRINT){
+                printf("Connection accepted from fd %d %s:%d",sock_fd, get_ip(&client_addr), get_port(&client_addr));
+            }
             for (int i = 0; i < num_clients; i++)
             {
                 if (sock_fds[i] == 0)
@@ -165,7 +170,9 @@ int main()
                 }
                 if (valread == 0)
                 {
-                    printf("Client %d disconnected", sock_fds[i]);
+                    if(PRINT){
+                        printf("Client %d disconnected", sock_fds[i]);
+                    }
                     close(sock_fds[i]);
                     sock_fds[i] = 0;
                     continue;
@@ -178,15 +185,17 @@ int main()
 
                 char* ip = get_ip(&addrs[i]);
                 int port = get_port(&addrs[i]);
-                printf("\n%s\n>>request: %s, Sending response: %s\n\n", SEP, client_messg, server_messg);
-
-                fprintf(fp, "\n%s\n>>request: %s, response: %s, IP: %s, Port: %d\n", SEP, client_messg, server_messg, ip, port);
+                if(PRINT){
+                    printf("\n%s\n>>request: %s, Sending response: %s\n\n", SEP, client_messg, server_messg);
+                }
+                if(FILE_PRINT){
+                    fprintf(fp, "request: %s, response: %s, IP: %s, Port: %d\n", client_messg, server_messg, ip, port);
+                    fflush(fp);
+                }
             }
         }
-        fflush(fp);
+        
     }
     close(server_fd);
-    fflush(fp);
-    fclose(fp);
     return 0;
 }

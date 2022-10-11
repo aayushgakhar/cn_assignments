@@ -12,9 +12,9 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <poll.h>
+#include "util.h"
 
-#define PORT 8080
-#define MESG_SIZE 2000
+
 
 #define SEP "--------------------"
 
@@ -105,11 +105,13 @@ int main()
     pfd_count = 1;
     // open file
     FILE *fp;
-    fp = fopen("output/2dii.txt", "w");
-    if (fp == NULL)
-    {
-        perror("fopen");
-        exit(EXIT_FAILURE);
+    if(FILE_PRINT){
+        fp = fopen("output/2dii.txt", "w");
+        if (fp == NULL)
+        {
+            perror("fopen");
+            exit(EXIT_FAILURE);
+        }
     }
     // fd_set rdset;
     addrlen = sizeof(client_addr);
@@ -138,7 +140,9 @@ int main()
                         perror("accept");
                         exit(EXIT_FAILURE);
                     }
-                    printf("New connection , socket fd is %d , ip: %s , port : %d\n", new_socket, get_ip(&client_addr), get_port(&client_addr));
+                    if(PRINT){
+                        printf("New connection , socket fd is %d , ip: %s , port : %d\n", new_socket, get_ip(&client_addr), get_port(&client_addr));
+                    }
                     sock_fds[pfd_count].fd = new_socket;
                     sock_fds[pfd_count].events = POLLIN;
                     addrs[pfd_count] = client_addr;
@@ -155,7 +159,9 @@ int main()
                     }
                     if (valread == 0)
                     {
-                        printf("Client disconnected, ip: %s , port : %d\n", get_ip(&addrs[i]), get_port(&addrs[i]));
+                        if(PRINT){
+                            printf("Client disconnected, ip: %s , port : %d\n", get_ip(&addrs[i]), get_port(&addrs[i]));
+                        }
                         close(sock_fd);
                         sock_fds[i].fd = sock_fds[pfd_count - 1].fd;
                         addrs[i] = addrs[pfd_count - 1];
@@ -169,16 +175,17 @@ int main()
                     send(sock_fd, server_messg, strlen(server_messg), 0);
                     char *ip = get_ip(&addrs[i]);
                     int port = get_port(&addrs[i]);
-                    printf("\n%s\n>>request: %s, Sending response: %s\n\n", SEP, client_messg, server_messg);
-
-                    fprintf(fp, "\n%s\n>>request: %s, response: %s, IP: %s, Port: %d\n", SEP, client_messg, server_messg, ip, port);
-                    fflush(fp);
+                    if(PRINT){
+                        printf("\n%s\n>>request: %s, Sending response: %s\n\n", SEP, client_messg, server_messg);
+                    }
+                    if(FILE_PRINT){
+                        fprintf(fp, "request: %s, response: %s, IP: %s, Port: %d\n", client_messg, server_messg, ip, port);
+                        fflush(fp);
+                    }
                 }
             }
         }
     }
-    fflush(fp);
-    fclose(fp);
     close(server_fd);
     return 0;
 }

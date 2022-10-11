@@ -10,9 +10,9 @@
 #include <errno.h>
 #include <pthread.h>
 #include <fcntl.h>
+#include "util.h"
 
-#define PORT 8080
-#define MESG_SIZE 2000
+
 #define SEP "--------------------"
 
 typedef struct thread_arg_t
@@ -72,20 +72,21 @@ void *threadFunc(void *arg)
         long long int response = fac(atoi(request));
         memset(server_messg, 0, MESG_SIZE);
         sprintf(server_messg, "%llu", response);
-
-        printf("\n%s\n>>request: %s, Sending response: %s\n", SEP, request, server_messg);
-
-        fprintf(fp, "\n%s\n>>request: %s, response: %s, IP: %s, Port: %d\n", SEP, request, server_messg, ip, port);
-
+        if(PRINT){
+            printf("\n%s\n>>request: %s, Sending response: %s\n", SEP, request, server_messg);
+        }
+        if(FILE_PRINT){
+            fprintf(fp, "request: %s, response: %s, IP: %s, Port: %d\n", request, server_messg, ip, port);
+            fflush(fp);
+        }
         send(sock_fd, server_messg, strlen(server_messg), 0);
     }
     close(sock_fd);
-    fflush(fp);
-    
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+
     int server_fd, valread;
     struct sockaddr_in server_addr, client_addr;
     // get pid
@@ -128,12 +129,15 @@ int main()
         exit(EXIT_FAILURE);
     }
     // open file
+
     FILE *fp;
-    fp = fopen("output/2c.txt", "w");
-    if (fp == NULL)
-    {
-        perror("fopen");
-        exit(EXIT_FAILURE);
+    if (FILE_PRINT){
+        fp = fopen("output/2c.txt", "w");
+        if (fp == NULL)
+        {
+            perror("fopen");
+            exit(EXIT_FAILURE);
+        }
     }
     while (1)
     {
@@ -148,7 +152,9 @@ int main()
         char *ip = get_ip(&client_addr);
         int port = get_port(&client_addr);
         // write ip and port to file
-        fprintf(fp, "\nNew connection...\nIP: %s, Port: %d\n\n", ip, port);
+        if(PRINT){
+            printf("\nNew connection...\nIP: %s, Port: %d\n\n", ip, port);
+        }
 
         p_arg = (thread_arg_t *)malloc(sizeof *p_arg);
 
@@ -161,7 +167,5 @@ int main()
         i++;
     }
     close(server_fd);
-    fflush(fp);
-    fclose(fp);
     return 0;
 }
