@@ -3,6 +3,8 @@
 
 output/*
 
+ns-allinone-3.37/*
+
 # Object files
 *.o
 *.ko
