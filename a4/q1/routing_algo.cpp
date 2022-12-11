@@ -14,52 +14,19 @@ void printRT(vector<RoutingNode *> nd)
   }
 }
 
-
-unordered_map<string, vector<RoutingEntry>> graph;
-// vector<pair<string, routingtbl>> edges;
-
 void routingAlgo(vector<RoutingNode *> nd)
 {
 
-  bool saturation = false;
-
-  int g[nd.size()][nd.size()];
-
-  int ic = 0;
-
-  for(int i = 0; i < nd.size(); ++i)
-  {
-    for(RoutingNode *node : nd)
-    for(int j = 0; j < nd.size(); ++j)
-    {
-      g[i][j] = 0;
-    }
-  }
-
-  
-
   for (RoutingNode *node : nd)
   {
-    node->initialFlooding();
-    // cout << "Initial Flooding" << endl;
+    node->initialize();
     node->sendMsg();
-    
-    ic += node->getInterfaceCount();
   }
-
 
   for (RoutingNode *node : nd)
   {
-    node->djikstra(graph);
+    node->djikstra(nd, node);
   }
-
-  // for (int i = 1; i < nd.size(); ++i)
-  // {
-  //   for (RoutingNode *node : nd)
-  //   {
-  //     node->sendMsg();
-  //   }
-  // }
 
   /*Print routing table entries after routing algo converges */
   printf("Printing the routing tables after the convergence \n");
@@ -75,72 +42,155 @@ void RoutingNode::recvMsg(RouteMsg *msg)
   // entries.
   // Update entries.
 
-  routingtbl *recvRoutingTable = msg->mytbl;
-  int c = 0;
-  // for (auto it : *(msg->umap))
-  // {
-  //   if(umap.find(it.first) == umap.end()){
-  //     umap[it.first] = it.second;
-  //     c++;
-  //   }
-  // }
-  // cout << c << endl;
-  // if (c == 0)
-  // {
-  //     return;
-  // }
-  struct routingtbl ntbl;
-  for (int i = 0; i < recvRoutingTable->tbl.size(); ++i)
+  if (map.find(msg->from_name) == map.end())
   {
-    ntbl.tbl.push_back(recvRoutingTable->tbl[i]);
+    return;
   }
-  graph[msg->from] = ntbl.tbl;
-  // cout<<graph.size()<<endl;
-  // for(NetInterface iface: interfaces){
-  //   if(iface.getip() == msg->from){
-  //     return;
-  //   }
-  // }
 
-  // RoutingEntry newEntry;
-  // newEntry.dstip = msg->from;
-  // newEntry.nexthop = msg->from;
-  // newEntry.ip_interface = msg->recvip;
-  // newEntry.cost = 1;
-  // mytbl.tbl.push_back(newEntry);
+  map[msg->from_name] = msg->neighbours;
 
-  return;
-
-  for (RoutingEntry entry : recvRoutingTable->tbl)
+  for (int i = 0; i < getinterfaces().size(); ++i)
   {
-    // Check routing entry
-
-    bool entryExists = false;
-    for (int i = 0; i < mytbl.tbl.size(); ++i)
+    if (getinterfaces()[i].first.getConnectedIp() == msg->from)
     {
-      RoutingEntry myEntry = mytbl.tbl[i];
-      // printf("i=%d, nodeRT.cost=%d, DV.cost=%d\n",i, myEntry.cost, entry.cost );
-      if (myEntry.dstip == entry.dstip)
+      continue;
+    }
+    RouteMsg nmsg;
+    nmsg.from = msg->from;
+    nmsg.neighbours = neighbours;
+    nmsg.from_name = msg->from_name;
+    nmsg.recvip = getinterfaces()[i].first.getConnectedIp();
+    ((RoutingNode *)getinterfaces()[i].second)->recvMsg(&nmsg);
+    djikstra_();
+  }
+}
+
+int minDistance(int dist[], int visited[], int n)
+{
+  int min = INT_MAX, min_index;
+
+  for (int v = 0; v < n; v++)
+    if (visited[v] == 0 && dist[v] <= min)
+      min = dist[v], min_index = v;
+
+  return min_index;
+}
+
+string get_ip(RoutingNode *p, RoutingNode *d, int c)
+{
+  vector<pair<NetInterface, Node *>> interfaces = p->getinterfaces();
+  for (int i = 0; i < interfaces.size(); ++i)
+  {
+    if (interfaces[i].second->getName() == d->getName())
+    {
+      pair<string, string> ip;
+      if (c == 1)
+        return interfaces[i].first.getip();
+      else
+        return interfaces[i].first.getConnectedIp();
+    }
+  }
+  return "";
+}
+
+int getnexthop(vector<RoutingNode *> nd, int i, int parent[])
+{
+  while (parent[parent[i]] != -1)
+  {
+    i = parent[i];
+  }
+  return i;
+}
+
+void RoutingNode::djikstra(vector<RoutingNode *> nd, RoutingNode *source)
+{
+  int n = 0 + nd.size();
+  int dist[nd.size()];
+  int visited[nd.size()];
+  int parent[nd.size()];
+  int **graph = new int *[n];
+  for (int i = 0; i < n; ++i)
+  {
+    graph[i] = new int[n];
+    dist[i] = INT_MAX;
+    visited[i] = 0;
+    parent[i] = -1;
+  }
+  for (int i = 0; i < nd.size(); ++i)
+  {
+    for (auto ne : nd[i]->neighbours)
+    {
+      graph[i][ne.first.getid()] = ne.second;
+    }
+  }
+  dist[source->getid()] = 0;
+  for (int count = 0; count < nd.size() - 1; count++)
+  {
+    int u = minDistance(dist, visited, nd.size());
+    visited[u] = 1;
+    for (int i = 0; i < nd[u]->neighbours.size(); i++)
+    {
+      int v = nd[u]->neighbours[i].first.getid();
+      if (!visited[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v])
       {
-        entryExists = true;
-        // update existing entry
-        if (myEntry.cost > entry.cost + 1)
-        {
-          myEntry.cost = entry.cost + 1;
-          myEntry.nexthop = msg->from;
-          mytbl.tbl[i] = myEntry;
-        }
+        dist[v] = dist[u] + graph[u][v];
+        parent[v] = u;
       }
     }
-    if (!entryExists)
+  }
+  mytbl.tbl.clear();
+  for (int i = 0; i < n; i++)
+  {
+    if (parent[i] == -1)
     {
-      // add the new entry
-      RoutingEntry newEntry;
-      newEntry.dstip = entry.dstip;
-      newEntry.nexthop = msg->from;
-      newEntry.ip_interface = msg->recvip;
-      newEntry.cost = entry.cost + 1;
-      mytbl.tbl.push_back(newEntry);
+      for (auto itf2 : nd[i]->ips)
+      {
+        source->addTblEntry(itf2, itf2, itf2, dist[i]);
+      }
+      continue;
     }
+    int nh = getnexthop(nd, i, parent);
+    string nhs = get_ip(source, nd[nh], 2);
+    string src = get_ip(source, nd[nh], 1);
+    for (auto itf2 : nd[i]->ips)
+    {
+      source->addTblEntry(itf2, nhs, src, dist[i]);
+    }
+  }
+}
+
+void RoutingNode::djikstra_()
+{
+  unordered_map<string, vector<pair<Node, int>>> nd =  map;
+  int n = 0 + nd.size();
+  int dist[nd.size()];
+  int visited[nd.size()];
+  int parent[nd.size()];
+  int **graph = new int *[n];
+  for (int i = 0; i < n; ++i)
+  {
+    graph[i] = new int[n];
+    dist[i] = INT_MAX;
+    visited[i] = 0;
+    parent[i] = -1;
+  }
+  for (int i = 0; i < nd.size(); ++i)
+  {
+    for (auto ne : neighbours)
+    {
+      graph[i][ne.first.getid()] = ne.second;
+    }
+  }
+  dist[getid()] = 0;
+  for (int count = 0; count < nd.size() - 1; count++)
+  {
+    // int u = minDistance(dist, visited, nd.size());
+    // visited[u] = 1;
+    string u = "a";
+  }
+  for (int i = 0; i < n; i++)
+  {
+    if (parent[i] == -1)
+      continue;
   }
 }

@@ -16,6 +16,7 @@ int main()
     RoutingNode *newnode = new RoutingNode();
     cin >> name;
     newnode->setName(name);
+    newnode->setid(distanceVectorNodes.size());
     distanceVectorNodes.push_back(newnode);
   }
   cin >> name;
@@ -28,6 +29,7 @@ int main()
     for (int i = 0; i < distanceVectorNodes.size(); i++)
     {
       string myeth, oeth, oname;
+      int cost;
       if (distanceVectorNodes[i]->getName() == name)
       {
         // node interface ip
@@ -36,6 +38,7 @@ int main()
         cin >> oeth;
         // label of the node whose ip is oeth
         cin >> oname;
+        cost = 1;
         for (int j = 0; j < distanceVectorNodes.size(); j++)
         {
           if (distanceVectorNodes[j]->getName() == oname)
@@ -45,7 +48,7 @@ int main()
             @oeth: ip address of other end of connection.
             @distanceVectorNodes[j]: pointer to the node whose one of the interface is @oeth
             */
-            distanceVectorNodes[i]->addInterface(myeth, oeth, distanceVectorNodes[j]);
+            distanceVectorNodes[i]->addInterface(myeth, oeth, distanceVectorNodes[j], cost);
             // Routing table initialization
             /*
             @myeth: ip address of my (distanceVectorNodes[i]) ethernet interface.
