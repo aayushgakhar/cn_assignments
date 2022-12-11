@@ -1,54 +1,36 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-f = open("./q3/tcp-example.tr", "r")
-data = f.readlines()
-
-xVal = []
-yVal = []
-
-q = {}
-total_delay = 0
-total_packets = 0
-ctr = 0
-
-for line in data:
-    arr = line.strip().split()
-
-    n = arr[2].split('/')
-    n = n[2]
-    if n != '1':
-        continue
-    
-    seq = int(arr[36][4:])
-    time = float(arr[1])
-    enq = arr[0] == "+"
-    deq = arr[0] == "-"
-
-    if enq:
-        q[seq] = time
-    elif deq:
-        if seq not in q.keys():
+with open("./q3/tcp-example.tr", "r") as f:
+    data = f.readlines()
+    x, y = [], []
+    q = {}
+    td, tp, ctr = 0, 0, 0
+    for i in data:
+        i = i.strip().split()
+        n = i[2].split('/')[2]
+        if n != '1':
             continue
-        delay = time - q[seq]
-        total_delay += delay
-        total_packets += 1
+        seq = int(i[36][4:])
+        t = float(i[1])
+        if i[0] == '+':
+            q[seq] = t
+        elif i[0] == '-':
+            if seq not in q:
+                continue
+            dl = t - q[seq]
+            td += dl
+            tp += 1
+            if len(x) > 0 and x[-1] == t:
+                y[-1] = (y[-1] * ctr + dl) / (ctr + 1)
+                ctr += 1
+            else:
+                ctr = 1
+                x.append(t)
+                y.append(dl)
+            q.pop(seq)
 
-        if len(xVal) > 0 and xVal[-1] == time:
-            yVal[-1] = (yVal[-1] * ctr + delay) / (ctr + 1)
-            ctr += 1
-        else:
-            ctr = 1
-            xVal.append(time)
-            yVal.append(delay)
-        q.pop(seq)
-
-print(total_packets)
-
-xpoints = np.array(xVal)
-ypoints = np.array(yVal)
-
-plt.plot(xpoints, ypoints, "bo", markersize=3)
-plt.xlabel("Time (s)")
-plt.ylabel("Queuing delay (s)")
-plt.savefig('q3/queue.png')
+    plt.plot(x, y, "bo", markersize=3)
+    plt.xlabel("Time (s)")
+    plt.ylabel("Queuing delay (s)")
+    plt.savefig('q3/queue.png')
