@@ -16,23 +16,24 @@ void routingAlgo(vector<RoutingNode *> nd)
 {
 
   bool saturation = false;
-  int n = nd.size();
-  for (RoutingNode *srcnode : nd)
+
+  for (RoutingNode *node : nd)
   {
-    srcnode
-    
+    node->sendMsg();
   }
 
-    // for(int i=1; i<nd.size(); ++i) {
-    //   for (RoutingNode* node: nd){
-    //     node->sendMsg();
-    //   }
-    // }
+  // for (int i = 1; i < nd.size(); ++i)
+  // {
+  //   for (RoutingNode *node : nd)
+  //   {
+  //     node->sendMsg();
+  //   }
+  // }
 
-    /*Print routing table entries after routing algo converges */
-    printf("Printing the routing tables after the convergence \n");
-    printRT(nd);
-  }
+  /*Print routing table entries after routing algo converges */
+  printf("Printing the routing tables after the convergence \n");
+  printRT(nd);
+}
 
 void RoutingNode::recvMsg(RouteMsg *msg)
 {
