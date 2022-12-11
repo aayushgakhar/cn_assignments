@@ -1,5 +1,7 @@
 #include "node.h"
 #include <iostream>
+#include <unordered_map>
+#include <queue>
 
 using namespace std;
 
@@ -12,14 +14,26 @@ void printRT(vector<RoutingNode *> nd)
   }
 }
 
+unordered_map<string, routingtbl *> graph;
+
+
 void routingAlgo(vector<RoutingNode *> nd)
 {
 
   bool saturation = false;
 
+  int ic = 0;
+
   for (RoutingNode *node : nd)
   {
+    node->initialFlooding(graph);
     node->sendMsg();
+    ic += node->getInterfaceCount();
+  }
+
+  for (RoutingNode *node : nd)
+  {
+    node->djikstra(&graph);
   }
 
   // for (int i = 1; i < nd.size(); ++i)
@@ -45,6 +59,35 @@ void RoutingNode::recvMsg(RouteMsg *msg)
   // Update entries.
 
   routingtbl *recvRoutingTable = msg->mytbl;
+  int c = 0;
+  for (auto it : *(msg->umap))
+  {
+    if(umap.find(it.first) == umap.end()){
+      umap[it.first] = it.second;
+      c++;
+    }
+  }
+  cout << c << endl;
+  if (c == 0)
+  {
+      return;
+  }
+  graph[msg->from] = recvRoutingTable;
+  // for(NetInterface iface: interfaces){
+  //   if(iface.getip() == msg->from){
+  //     return;
+  //   }
+  // }
+
+  // RoutingEntry newEntry;
+  // newEntry.dstip = msg->from;
+  // newEntry.nexthop = msg->from;
+  // newEntry.ip_interface = msg->recvip;
+  // newEntry.cost = 1;
+  // mytbl.tbl.push_back(newEntry);
+
+  return;
+
   for (RoutingEntry entry : recvRoutingTable->tbl)
   {
     // Check routing entry

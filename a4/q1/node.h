@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <unordered_map>
+#include <queue>
 
 using namespace std;
 
@@ -45,6 +47,8 @@ public:
   }
 };
 
+
+
 /*
   This is the routing table
 */
@@ -63,7 +67,9 @@ class RouteMsg
 {
 public:
   string from;              // I am sending this message, so it must be me i.e. if A is sending mesg to B then it is A's ip address
+  string from_name;
   struct routingtbl *mytbl; // This is routing table of A
+  unordered_map<string, routingtbl*> *umap;
   string recvip;            // B ip address that will receive this message
 };
 
@@ -114,6 +120,7 @@ private:
 
 protected:
   struct routingtbl mytbl;
+  unordered_map<string, routingtbl*> umap;
   virtual void recvMsg(RouteMsg *msg)
   {
     cout << "Base" << endl;
@@ -186,6 +193,91 @@ public:
     return mytbl;
   }
 
+  int getInterfaceCount()
+  {
+    int c = interfaces.size();
+    return c;
+  }
+
+  void initialFlooding(unordered_map<string, routingtbl *> graph)
+  {
+    for (int i = 0; i < interfaces.size(); ++i)
+    {
+      RoutingEntry newEntry;
+      newEntry.dstip = interfaces[i].first.getConnectedIp();
+      newEntry.nexthop = interfaces[i].first.getConnectedIp();
+      newEntry.ip_interface = interfaces[i].first.getip();
+      newEntry.cost = 1;
+      mytbl.tbl.push_back(newEntry);
+    }
+    struct routingtbl ntbl;
+    for (int i = 0; i < mytbl.tbl.size(); ++i)
+    {
+      ntbl.tbl.push_back(mytbl.tbl[i]);
+    }
+    graph[this->getName()] = &ntbl;
+  }
+
+  void djikstra(unordered_map<string, routingtbl *> *graph)
+  {
+    unordered_map<string, int> dist;
+    unordered_map<string, string> prev;
+    unordered_map<string, bool> visited;
+    unordered_map<string, string> ip_interface;
+    unordered_map<string, string> nexthop;
+
+    for (auto it : *graph)
+    {
+      dist[it.first] = INT_MAX;
+      prev[it.first] = "";
+      visited[it.first] = false;
+      ip_interface[it.first] = "";
+      nexthop[it.first] = "";
+    }
+
+    dist[this->getName()] = 0;
+
+    for (int i = 0; i < graph->size(); ++i)
+    {
+      string u = "";
+      int min = INT_MAX;
+      for (auto it : *graph)
+      {
+        if (visited[it.first] == false && dist[it.first] < min)
+        {
+          u = it.first;
+          min = dist[it.first];
+        }
+      }
+
+      visited[u] = true;
+
+      for (int j = 0; j < graph->at(u)->tbl.size(); ++j)
+      {
+        string v = graph->at(u)->tbl[j].dstip;
+        int w = graph->at(u)->tbl[j].cost;
+        if (visited[v] == false && dist[u] + w < dist[v])
+        {
+          dist[v] = dist[u] + w;
+          prev[v] = u;
+          ip_interface[v] = graph->at(u)->tbl[j].ip_interface;
+          nexthop[v] = graph->at(u)->tbl[j].nexthop;
+        }
+      }
+    }
+
+    // mytbl.tbl.clear();
+    for (auto it : *graph)
+    {
+      RoutingEntry newEntry;
+      newEntry.dstip = it.first;
+      newEntry.nexthop = nexthop[it.first];
+      newEntry.ip_interface = ip_interface[it.first];
+      newEntry.cost = dist[it.first];
+      mytbl.tbl.push_back(newEntry);
+    }
+  }
+
   void printTable()
   {
     Comparator myobject;
@@ -199,20 +291,33 @@ public:
 
   void sendMsg()
   {
-    struct routingtbl ntbl;
-    for (int i = 0; i < mytbl.tbl.size(); ++i)
-    {
-      ntbl.tbl.push_back(mytbl.tbl[i]);
+    unordered_map<string, routingtbl* > numap;
+    for(auto it: umap){
+      struct routingtbl ntbl;
+      for (int i = 0; i < it.second->tbl.size(); ++i)
+      {
+        ntbl.tbl.push_back(it.second->tbl[i]);
+      }
+      numap[it.first] = &ntbl;
     }
+    
+    // for (int i = 0; i < mytbl.tbl.size(); ++i)
+    // {
+    //   ntbl.tbl.push_back(mytbl.tbl[i]);
+    // }
 
     for (int i = 0; i < interfaces.size(); ++i)
     {
-      RouteMsg msg;
-      msg.from = interfaces[i].first.getip();
-      // printf("i=%d, msg-from-interface=%s\n",i, msg.from.c_str());
-      msg.mytbl = &ntbl;
-      msg.recvip = interfaces[i].first.getConnectedIp();
-      interfaces[i].second->recvMsg(&msg);
+      // for (int j = 0; j < interfaces.size(); ++j)
+      // {
+        RouteMsg msg;
+        msg.from = interfaces[i].first.getip();
+        msg.from_name = this->getName();
+        // printf("i=%d, msg-from-interface=%s\n",i, msg.from.c_str());
+        msg.umap = &numap;
+        msg.recvip = interfaces[i].first.getConnectedIp();
+        interfaces[i].second->recvMsg(&msg);
+      // }
     }
   }
 };
