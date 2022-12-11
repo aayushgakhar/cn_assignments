@@ -14,26 +14,43 @@ void printRT(vector<RoutingNode *> nd)
   }
 }
 
-unordered_map<string, routingtbl *> graph;
 
+unordered_map<string, vector<RoutingEntry>> graph;
+// vector<pair<string, routingtbl>> edges;
 
 void routingAlgo(vector<RoutingNode *> nd)
 {
 
   bool saturation = false;
 
+  int g[nd.size()][nd.size()];
+
   int ic = 0;
+
+  for(int i = 0; i < nd.size(); ++i)
+  {
+    for(RoutingNode *node : nd)
+    for(int j = 0; j < nd.size(); ++j)
+    {
+      g[i][j] = 0;
+    }
+  }
+
+  
 
   for (RoutingNode *node : nd)
   {
-    node->initialFlooding(graph);
+    node->initialFlooding();
+    // cout << "Initial Flooding" << endl;
     node->sendMsg();
+    
     ic += node->getInterfaceCount();
   }
 
+
   for (RoutingNode *node : nd)
   {
-    node->djikstra(&graph);
+    node->djikstra(graph);
   }
 
   // for (int i = 1; i < nd.size(); ++i)
@@ -60,19 +77,25 @@ void RoutingNode::recvMsg(RouteMsg *msg)
 
   routingtbl *recvRoutingTable = msg->mytbl;
   int c = 0;
-  for (auto it : *(msg->umap))
+  // for (auto it : *(msg->umap))
+  // {
+  //   if(umap.find(it.first) == umap.end()){
+  //     umap[it.first] = it.second;
+  //     c++;
+  //   }
+  // }
+  // cout << c << endl;
+  // if (c == 0)
+  // {
+  //     return;
+  // }
+  struct routingtbl ntbl;
+  for (int i = 0; i < recvRoutingTable->tbl.size(); ++i)
   {
-    if(umap.find(it.first) == umap.end()){
-      umap[it.first] = it.second;
-      c++;
-    }
+    ntbl.tbl.push_back(recvRoutingTable->tbl[i]);
   }
-  cout << c << endl;
-  if (c == 0)
-  {
-      return;
-  }
-  graph[msg->from] = recvRoutingTable;
+  graph[msg->from] = ntbl.tbl;
+  // cout<<graph.size()<<endl;
   // for(NetInterface iface: interfaces){
   //   if(iface.getip() == msg->from){
   //     return;
