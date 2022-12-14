@@ -70,6 +70,7 @@ public:
   string from;              // I am sending this message, so it must be me i.e. if A is sending mesg to B then it is A's ip address
   string from_name;
   vector<pair<Node, int>> neighbours;
+  vector<string> ips;
   string recvip;            // B ip address that will receive this message
 };
 
@@ -148,6 +149,7 @@ public:
   vector<pair<Node,int>> neighbours;
   vector<string> ips;
   unordered_map<string, vector<pair<Node, int>>> map;
+  unordered_map<string, vector<string>> map_ip;
   void setName(string name)
   {
     this->name = name;
@@ -244,6 +246,45 @@ public:
     }
   }
 
+  int minDistance(int dist[], int visited[], int n)
+  {
+    int min = INT_MAX, min_index;
+
+    for (int v = 0; v < n; v++)
+      if (visited[v] == 0 && dist[v] <= min)
+        min = dist[v], min_index = v;
+
+    return min_index;
+  }
+
+  int getnexthop(int i, int parent[])
+  {
+    while (parent[parent[i]] != -1)
+    {
+      i = parent[i];
+    }
+    return i;
+  }
+
+  bool isconnected(string eth)
+  {
+    for (int i = 0; i < interfaces.size(); ++i)
+    {
+      if (interfaces[i].first.getConnectedIp() == eth)
+        return true;
+    }
+    return false;
+  }
+  string connectedip(string eth)
+  {
+    for (int i = 0; i < interfaces.size(); ++i)
+    {
+      if (interfaces[i].first.getConnectedIp() == eth)
+        return interfaces[i].first.getConnectedIp();
+    }
+    return "";
+  }
+
   void printTable()
   {
     Comparator myobject;
@@ -257,12 +298,15 @@ public:
 
   void sendMsg()
   {
+    initialize();
+    map[this->getName()] = neighbours;
     for (int i = 0; i < interfaces.size(); ++i)
     {
       RouteMsg msg;
       msg.from = interfaces[i].first.getip();
       msg.from_name = this->getName();
       msg.neighbours = neighbours;
+      msg.ips = ips;
       msg.recvip = interfaces[i].first.getConnectedIp();
       interfaces[i].second->recvMsg(&msg);
     }
@@ -273,6 +317,155 @@ class RoutingNode : public Node
 {
 public:
   void recvMsg(RouteMsg *msg);
-  void djikstra(vector<RoutingNode *> nd, RoutingNode* source);
-  void djikstra();
+  string get_ip(RoutingNode *p, RoutingNode *d, int c)
+  {
+    vector<pair<NetInterface, Node *>> interfaces = p->getinterfaces();
+    for (int i = 0; i < interfaces.size(); ++i)
+    {
+      if (interfaces[i].second->getName() == d->getName())
+      {
+        pair<string, string> ip;
+        if (c == 1)
+          return interfaces[i].first.getip();
+        else
+          return interfaces[i].first.getConnectedIp();
+      }
+    }
+    return "";
+  }
+  
+  string get_ip2(RoutingNode *p, vector<string> d, int c)
+  {
+    vector<pair<NetInterface, Node *>> interfaces = p->getinterfaces();
+    for (int i = 0; i < d.size(); ++i)
+    {
+      if (isconnected(d[i]))
+      {
+        pair<string, string> ip;
+        if (c == 1)
+          return connectedip(d[i]);
+        else return d[i];
+      }
+    }
+    return "";
+  }
+  void routing_table(vector<RoutingNode *> nd, RoutingNode *source)
+  {
+    int n = nd.size();
+    int dist[nd.size()];
+    int visited[nd.size()];
+    int parent[nd.size()];
+    int **graph = new int *[n];
+    for (int i = 0; i < n; ++i)
+    {
+      graph[i] = new int[n];
+      dist[i] = INT_MAX;
+      visited[i] = 0;
+      parent[i] = -1;
+    }
+    for (int i = 0; i < nd.size(); ++i)
+    {
+      for (auto ne : nd[i]->neighbours)
+      {
+        graph[i][ne.first.getid()] = ne.second;
+      }
+    }
+    dist[source->getid()] = 0;
+    for (int count = 0; count < nd.size() - 1; count++)
+    {
+      int u = minDistance(dist, visited, nd.size());
+      visited[u] = 1;
+      for (int i = 0; i < nd[u]->neighbours.size(); i++)
+      {
+        int v = nd[u]->neighbours[i].first.getid();
+        if (!visited[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v])
+        {
+          dist[v] = dist[u] + graph[u][v];
+          parent[v] = u;
+        }
+      }
+    }
+    mytbl.tbl.clear();
+    for (int i = 0; i < n; i++)
+    {
+      if (parent[i] == -1)
+      {
+        for (auto itf2 : nd[i]->ips)
+        {
+          source->addTblEntry(itf2, itf2, itf2, dist[i]);
+        }
+        continue;
+      }
+      int nh = getnexthop(i, parent);
+      string nhs = get_ip(source, nd[nh], 2);
+      string src = get_ip(source, nd[nh], 1);
+      for (auto itf2 : nd[i]->ips)
+      {
+        source->addTblEntry(itf2, nhs, src, dist[i]);
+      }
+    }
+  }
+  void djikstra()
+  {
+    vector<string> nd;
+    for (auto ke : map)
+    {
+      nd.push_back(ke.first);
+    }
+    int n = nd.size();
+    int dist[nd.size()];
+    int visited[nd.size()];
+    int parent[nd.size()];
+    int **graph = new int *[n];
+    for (int i = 0; i < n; ++i)
+    {
+      graph[i] = new int[n];
+      dist[i] = INT_MAX;
+      visited[i] = 0;
+      parent[i] = -1;
+    }
+
+    for (int i = 0; i < nd.size(); ++i)
+    {
+      for (auto ne : map[nd[i]])
+      {
+        graph[i][ne.first.getid()] = ne.second;
+      }
+    }
+    dist[getid()] = 0;
+    for (int count = 0; count < nd.size() - 1; count++)
+    {
+      int u = minDistance(dist, visited, nd.size());
+      visited[u] = 1;
+      for (int i = 0; i < map[nd[u]].size(); i++)
+      {
+        int v = map[nd[u]][i].first.getid();
+        if (!visited[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v])
+        {
+          dist[v] = dist[u] + graph[u][v];
+          parent[v] = u;
+        }
+      }
+    }
+    mytbl.tbl.clear();
+    for (int i = 0; i < n; i++)
+    {
+      if (parent[i] == -1)
+      {
+        for (auto itf2 : map_ip[nd[i]])
+        {
+          addTblEntry(itf2, itf2, itf2, dist[i]);
+        }
+        continue;
+      }
+      int nh = getnexthop(i, parent);
+      string nhs = get_ip2(this, map_ip[nd[nh]], 2);
+      string src = get_ip2(this, map_ip[nd[nh]], 1);
+
+      for (auto itf2 : map_ip[nd[i]])
+      {
+        addTblEntry(itf2, nhs, src, dist[i]);
+      }
+    }
+  }
 };
